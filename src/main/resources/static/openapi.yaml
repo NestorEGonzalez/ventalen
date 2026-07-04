@@ -1,0 +1,557 @@
+openapi: 3.0.3
+info:
+  title: API Productos
+  description: >
+    API REST para gestión de productos y categorías.
+    Los endpoints de modificación requieren autenticación JWT con rol ADMIN.
+    Los endpoints de consulta (GET) son públicos.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CategoriaRequest:
+      type: object
+      required:
+        - categoria
+      properties:
+        categoria:
+          type: string
+          example: "Electrónica"
+          description: Nombre de la categoría
+
+    CategoriaResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: ID generado automáticamente
+        categoria:
+          type: string
+          example: "electrónica"
+          description: Nombre de la categoría en minúsculas
+
+    ProductoRequest:
+      type: object
+      required:
+        - nombre
+      properties:
+        nombre:
+          type: string
+          example: "Laptop Dell"
+          description: Nombre del producto
+        precio:
+          type: number
+          format: decimal
+          example: 999.99
+          description: Precio del producto, no puede ser negativo
+        idCat:
+          type: integer
+          format: int64
+          example: 1
+          description: ID de la categoría a la que pertenece el producto
+
+    ProductoResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: ID generado automáticamente
+        nombre:
+          type: string
+          example: "laptop dell"
+          description: Nombre del producto en minúsculas
+        precio:
+          type: number
+          format: decimal
+          example: 999.99
+          description: Precio del producto
+        categoriaId:
+          type: integer
+          format: int64
+          example: 1
+          description: ID de la categoría del producto
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "admin"
+          description: Nombre de usuario
+        password:
+          type: string
+          example: "admin123"
+          description: Contraseña del usuario
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - password
+        - rol
+      properties:
+        username:
+          type: string
+          example: "usuario1"
+          description: Nombre de usuario
+        password:
+          type: string
+          example: "password123"
+          description: Contraseña del usuario
+        rol:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+          example: "USER"
+          description: Rol del usuario
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiJ9..."
+          description: JWT token para autenticación
+        username:
+          type: string
+          example: "admin"
+          description: Nombre de usuario
+        rol:
+          type: string
+          example: "ADMIN"
+          description: Rol del usuario
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+          description: Código HTTP del error
+        mensaje:
+          type: string
+          example: "El campo está vacío o nulo."
+          description: Descripción del error
+        timestamp:
+          type: integer
+          format: int64
+          example: 1710000000000
+          description: Momento en que ocurrió el error
+
+tags:
+  - name: Autenticación
+    description: Endpoints para login y registro de usuarios
+  - name: Categorías
+    description: Gestión de categorías de productos
+  - name: Productos
+    description: Gestión de productos
+
+paths:
+
+  # ─────────────────────────── AUTH ───────────────────────────
+
+  /auth/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Login
+      description: Autenticación de un usuario existente. Devuelve un JWT token válido por 8 horas.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Credenciales incorrectas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Campos nulos o vacíos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/register:
+    post:
+      tags:
+        - Autenticación
+      summary: Registrar usuario
+      description: Registro de un nuevo usuario. Solo puede ser ejecutado por un usuario con rol ADMIN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Campos inválidos o username ya existente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: No autorizado, se requiere rol ADMIN
+
+  # ─────────────────────────── CATEGORIAS ───────────────────────────
+
+  /productos/categorias:
+    get:
+      tags:
+        - Categorías
+      summary: Obtener todas las categorías
+      description: Devuelve la lista completa de categorías. Endpoint público.
+      security: []
+      responses:
+        '200':
+          description: Lista de categorías
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoriaResponse'
+
+    post:
+      tags:
+        - Categorías
+      summary: Crear categoría
+      description: Crea una nueva categoría. Requiere rol ADMIN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaRequest'
+      responses:
+        '201':
+          description: Categoría creada exitosamente
+          headers:
+            Location:
+              description: URL de la categoría creada
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaResponse'
+        '400':
+          description: Nombre nulo o vacío
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: La categoría ya existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /productos/categorias/{id}:
+    get:
+      tags:
+        - Categorías
+      summary: Obtener categoría por ID
+      description: Devuelve una categoría específica. Endpoint público.
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Categoría encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaResponse'
+        '404':
+          description: Categoría no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags:
+        - Categorías
+      summary: Modificar categoría
+      description: Modifica el nombre de una categoría existente. Requiere rol ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría a modificar
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaRequest'
+      responses:
+        '200':
+          description: Categoría modificada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaResponse'
+        '400':
+          description: Nombre nulo o vacío
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Categoría no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: El nombre ya existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Categorías
+      summary: Eliminar categoría
+      description: Elimina una categoría por su ID. Requiere rol ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría a eliminar
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Categoría eliminada exitosamente
+        '404':
+          description: Categoría no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /productos/categorias/filtrar/{cat}:
+    get:
+      tags:
+        - Categorías
+      summary: Filtrar categorías por nombre
+      description: Devuelve las categorías que contienen el texto indicado en su nombre. Endpoint público.
+      security: []
+      parameters:
+        - name: cat
+          in: path
+          required: true
+          description: Texto a buscar en el nombre de las categorías
+          schema:
+            type: string
+            example: "electr"
+      responses:
+        '200':
+          description: Lista de categorías que coinciden
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoriaResponse'
+
+  # ─────────────────────────── PRODUCTOS ───────────────────────────
+
+  /productos:
+    post:
+      tags:
+        - Productos
+      summary: Crear producto
+      description: Crea un nuevo producto. Requiere rol ADMIN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+          headers:
+            Location:
+              description: URL del producto creado
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+        '400':
+          description: Campos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Categoría inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: El nombre del producto ya existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /productos/{id}:
+    patch:
+      tags:
+        - Productos
+      summary: Modificar producto
+      description: Modifica los datos de un producto existente. Requiere rol ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto a modificar
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+      responses:
+        '202':
+          description: Producto modificado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResponse'
+        '400':
+          description: Campos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Producto o categoría inexistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: El nombre ya existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Productos
+      summary: Eliminar producto
+      description: Elimina un producto por su ID. Requiere rol ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto a eliminar
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Producto eliminado exitosamente
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /productos/categorias/{idVieja}/reemplazar/{idNueva}:
+    patch:
+      tags:
+        - Productos
+      summary: Reemplazar categoría de productos
+      description: >
+        Cambia masivamente la categoría de todos los productos que tengan
+        la categoría indicada. Requiere rol ADMIN.
+      parameters:
+        - name: idVieja
+          in: path
+          required: true
+          description: ID de la categoría a reemplazar
+          schema:
+            type: integer
+            format: int64
+        - name: idNueva
+          in: path
+          required: true
+          description: ID de la nueva categoría
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Categoría reemplazada exitosamente en todos los productos
+        '404':
+          description: Alguna de las categorías no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

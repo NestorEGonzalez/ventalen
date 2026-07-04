@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.ventalen.repository.CategoriaRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 85.50 s -- in com.ventalen.repository.CategoriaRepositoryTest

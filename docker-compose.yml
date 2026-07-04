@@ -1,0 +1,35 @@
+
+services:
+  db:
+    image: postgres:15
+    container_name: ventalen-db
+    environment:
+      POSTGRES_DB: ventalen_db
+      POSTGRES_USER: fido
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: ventalen-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      # Estos nombres deben coincidir EXACTAMENTE con tus ${VARIABLES} en application.properties
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ventalen_db
+      SPRING_DATASOURCE_USERNAME: fido
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: ${JWT_SECRET}
+      APP_JWT_SECRET : ${JWT_SECRET}
+      APP_ADMIN_USERNAME: admin
+      APP_ADMIN_PASSWORD: admin123
+
+volumes:
+    pgdata:
+    
