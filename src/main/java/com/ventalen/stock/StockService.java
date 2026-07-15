@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ventalen.exception.ErrorCantidadInvalida;
 import com.ventalen.exception.ErrorStockConIdInexistente;
 import com.ventalen.exception.ErrorStockYaExistente;
+import com.ventalen.funciones.ValidarCantidad;
 import com.ventalen.producto.Producto;
 import com.ventalen.producto.ProductoService;
 
@@ -25,7 +26,7 @@ public class StockService {
 
     @Transactional
     public Stock crearStock(Long idProd, Integer cantidad){
-        validarCantidad(cantidad);
+        ValidarCantidad.validarCantidad(cantidad);
         Producto producto = productoService.buscarProductoConId(idProd);
         if (stockRepository.existsByProducto(producto)){
             throw new ErrorStockYaExistente(producto.getId());
@@ -33,26 +34,29 @@ public class StockService {
         return stockRepository.save(new Stock(producto, cantidad));
     }
 
-    private void validarCantidad(Integer cantidad){
+    /*private void validarCantidad(Integer cantidad){
         if (cantidad == null) {
             throw new ErrorCantidadInvalida(ErrorCantidadInvalida.ERROR_CANTIDAD_NULA);
         }
         if (cantidad < 0) {
             throw new ErrorCantidadInvalida(ErrorCantidadInvalida.ERROR_CANTIDAD_NEGATIVA);
         }
-    }
+    }*/
 
     public List<Stock> obtenerTodosLosStocks(){
         return stockRepository.findAll();
     }
 
     public Stock buscarStockConId(Long id){
-        return stockRepository.findById(id).orElseThrow(()->{throw new ErrorStockConIdInexistente(id);});
+        return stockRepository.findById(id)
+        .orElseThrow(()->{throw new ErrorStockConIdInexistente(id);});
     }
 
     public Stock buscarStockPorProducto(Long idProd){
         Producto producto = productoService.buscarProductoConId(idProd);
-        return stockRepository.findByProducto(producto).orElseThrow(()->{throw new ErrorStockConIdInexistente(producto.getId());});
+        return stockRepository.findByProducto(producto)
+                                .orElseThrow(()->{
+                                    throw new ErrorStockConIdInexistente(producto.getId());});
     }
 
     @Transactional
@@ -70,12 +74,12 @@ public class StockService {
     @Transactional
     public Stock cambiarCantidad(Long id, Integer cantidad){
         Stock stock = buscarStockConId(id);
-        validarCantidad(cantidad);
+        ValidarCantidad.validarCantidad(cantidad);
         stock.setCantidad(cantidad);
         return stockRepository.save(stock);
     }
 
-    @Transactional
+    /*@Transactional
     public Stock modificarStock(Long id, Long productoId, Integer cantidad){
         Stock stock = buscarStockConId(id);
         if (!stock.getProducto().getId().equals(productoId)){
@@ -88,6 +92,6 @@ public class StockService {
         validarCantidad(cantidad);
         stock.setCantidad(cantidad);
         return stockRepository.save(stock);
-    }
+    }*/
 
 }

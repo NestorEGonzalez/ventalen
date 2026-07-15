@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.exception.ErrorClienteInexistente;
+import com.ventalen.funciones.ValidarString;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,11 +35,32 @@ public class ClienteService {
     @Transactional
     public Cliente modificar(Long id, String nyap, String telefono) {
         Cliente cliente = buscarPorId(id);
-        cliente.setNyap(nyap);
-        cliente.setTelefono(telefono);
+        //String nombre = ValidarString.validarString(nyap);
+    /*
+        if (!cliente.getNyap().equals(nombre)){
+            cliente.setNyap(nyap);
+        }
+        if (!cliente.getTelefono().equals(telefono)){
+        }   cliente.setTelefono(telefono);
+    */  
+        cambiarNombre(cliente, nyap);
+        cambiarTelefono(cliente, telefono);
         cliente.activarCliente();
             
         return clienteRepository.save(cliente);
+    }
+
+    private void cambiarNombre(Cliente cliente, String nyap){
+        String nombre = ValidarString.validarString(nyap);
+        if (!cliente.getNyap().equals(nombre)){
+            cliente.setNyap(nombre);
+        }
+    }
+
+    private void cambiarTelefono(Cliente cliente, String telefono){
+        if (!cliente.getTelefono().equals(telefono)){
+            cliente.setTelefono(telefono);
+        }
     }
 
     @Transactional

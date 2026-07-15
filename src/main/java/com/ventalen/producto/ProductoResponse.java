@@ -2,13 +2,13 @@ package com.ventalen.producto;
 
 import java.math.BigDecimal;
 
-public class ProductoResponse {
-    private Long id;
-    private String nombre;
-    private BigDecimal precio;
-    private Long categoriaId;
-
-    public ProductoResponse(){}
+public record ProductoResponse(
+    Long id,
+    String nombre,
+    BigDecimal precio,
+    Long categoriaId){
+}
+    /* public ProductoResponse(){}
     public ProductoResponse(Long id, String nombre, BigDecimal precio, Long categoriaId){
         this.id = id;
         this.nombre = nombre;
@@ -46,6 +46,6 @@ public class ProductoResponse {
 
     public void setCategoriaId(Long categoriaId){
         this.categoriaId = categoriaId ;
-    }
+    } */
 
-}
+

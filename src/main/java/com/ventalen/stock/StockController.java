@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+//import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/stocks")
+@RequestMapping("/ventalen")
 public class StockController {
 
     private final StockService stockService;
@@ -59,10 +59,10 @@ public class StockController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(URL_BASE+"/{id}")
+    /*@PatchMapping(URL_BASE+"/{id}")
     public ResponseEntity<StockResponse> modificarStock(@PathVariable Long id, @Valid @RequestBody StockRequest stockRequest){
         Stock stock = stockService.modificarStock(id, stockRequest.productoId(), stockRequest.cantidad());
         return ResponseEntity.accepted().body(stockMapper.toResponse(stock));
-    }
+    }*/
 
 }

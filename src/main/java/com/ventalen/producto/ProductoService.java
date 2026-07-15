@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.categoria.Categoria;
 import com.ventalen.categoria.CategoriaRepository;
-import com.ventalen.exception.ErrorCampoVacioONulo;
+//import com.ventalen.exception.ErrorCampoVacioONulo;
 import com.ventalen.exception.ErrorCategoriaInexistente;
 import com.ventalen.exception.ErrorNombreProductoExistente;
 import com.ventalen.exception.ErrorProductoConIdInexistente;
@@ -118,7 +118,9 @@ public class ProductoService {
     }
 
     public Producto buscarProductoConId(Long id) {
-        return productoRepository.findById(id).orElseThrow(()->{throw new ErrorProductoConIdInexistente(id);});
+        return productoRepository.findById(id)
+                                    .orElseThrow(()->{
+                                        throw new ErrorProductoConIdInexistente(id);});
     }
 
     public List<Producto> obtenerProductosDeCategoria(Long id) {
@@ -142,8 +144,9 @@ public class ProductoService {
     @Transactional
     public Producto modificarDatosDeProducto(Long id, String nombre, BigDecimal precio, Long idCat) {
         Producto prod = obtenerProductoConId(id);
-        if (!prod.getNombre().equals(nombre.trim().toLowerCase())) {
-            cambiarNombreDeProducto(id, nombre);
+        String nombreValidado = ValidarString.validarString(nombre);
+        if (!prod.getNombre().equals(nombreValidado)) {
+            cambiarNombreDeProducto(id, nombreValidado);
         }
         if (!prod.getCategoria().getId().equals(idCat)) {
             cambiarCategoriaDeProducto(id, idCat);

@@ -1,6 +1,7 @@
 package com.ventalen.producto;
 
 import com.ventalen.categoria.Categoria;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-07-04T17:54:48-0300",
+    date = "2026-07-13T17:11:59-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.46.100.v20260624-0231, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
@@ -20,12 +21,17 @@ public class ProductoMapperImpl implements ProductoMapper {
             return null;
         }
 
-        ProductoResponse productoResponse = new ProductoResponse();
+        Long categoriaId = null;
+        Long id = null;
+        String nombre = null;
+        BigDecimal precio = null;
 
-        productoResponse.setCategoriaId( productoCategoriaId( producto ) );
-        productoResponse.setId( producto.getId() );
-        productoResponse.setNombre( producto.getNombre() );
-        productoResponse.setPrecio( producto.getPrecio() );
+        categoriaId = productoCategoriaId( producto );
+        id = producto.getId();
+        nombre = producto.getNombre();
+        precio = producto.getPrecio();
+
+        ProductoResponse productoResponse = new ProductoResponse( id, nombre, precio, categoriaId );
 
         return productoResponse;
     }

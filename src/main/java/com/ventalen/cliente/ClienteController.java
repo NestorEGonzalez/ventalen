@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/ventalen")
 public class ClienteController {
 
     private static final String URL_BASE = "/clientes";
@@ -42,8 +42,10 @@ public class ClienteController {
     @PostMapping(URL_BASE)
     public ResponseEntity<ClienteResponse> crear(@Valid @RequestBody ClienteRequest request) {
         Cliente cliente = clienteService.crear(request.nyap(), request.telefono());
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(cliente.getId()).toUri();
+        URI location = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(cliente.getId()).toUri();
         return ResponseEntity.created(location).body(clienteMapper.toResponse(cliente));
     }
 

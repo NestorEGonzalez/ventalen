@@ -18,7 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/productos")
+@RequestMapping("/ventalen")
 
 public class ProductoController {
     private final ProductoService productoService;

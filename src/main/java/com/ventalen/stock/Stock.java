@@ -3,6 +3,7 @@ package com.ventalen.stock;
 import com.ventalen.producto.Producto;
 import com.ventalen.exception.ErrorCampoVacioONulo;
 import com.ventalen.exception.ErrorCantidadInvalida;
+import com.ventalen.funciones.ValidarCantidad;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,13 +33,13 @@ public class Stock {
     @NotNull
     @PositiveOrZero(message = ErrorCantidadInvalida.ERROR_CANTIDAD_NEGATIVA)
     @Column(nullable = false)
-    private Integer cantidad;
+    private Integer cantidad = 0;
 
     public Stock(){}
 
     public Stock(Producto producto, Integer cantidad){
         validarProducto(producto);
-        validarCantidad(cantidad);
+        ValidarCantidad.validarCantidad(cantidad);
         this.producto = producto;
         this.cantidad = cantidad;
     }
@@ -49,21 +50,21 @@ public class Stock {
         }
     }
 
-    private void validarCantidad(Integer cantidad){
+    /*private void validarCantidad(Integer cantidad){
         if (cantidad == null) {
             throw new ErrorCantidadInvalida(ErrorCantidadInvalida.ERROR_CANTIDAD_NULA);
         }
         if (cantidad < 0) {
             throw new ErrorCantidadInvalida(ErrorCantidadInvalida.ERROR_CANTIDAD_NEGATIVA);
         }
-    }
+    }*/
 
     public Long getId(){
         return this.id;
     }
 
     public Producto getProducto(){
-        return this.producto != null ? this.producto : null;
+        return this.producto;
     }
 
     public Integer getCantidad(){
@@ -71,7 +72,7 @@ public class Stock {
     }
 
     public void setCantidad(Integer cantidad){
-        validarCantidad(cantidad);
+        ValidarCantidad.validarCantidad(cantidad);
         this.cantidad = cantidad;
     }
 
