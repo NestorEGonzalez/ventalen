@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.exception.ErrorMotivoInexistente;
+import com.ventalen.funciones.ValidarString;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,12 +33,12 @@ public class MotivoService {
     }
 
     @Transactional
-    public Motivo modificar(Long id, String motivo, Boolean afectaPositivo) {
+    public Motivo modificar(Long id, String motivo) {
         Motivo entidad = buscarPorId(id);
-        entidad.setMotivo(motivo);
-        if (afectaPositivo != null) {
+        entidad.setMotivo(ValidarString.validarString(motivo));
+        /*if (afectaPositivo != null) {
             entidad.setAfectaPositivo(afectaPositivo);
-        }
+        }*/
         return motivoRepository.save(entidad);
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ventalen.exception.ErrorCantidadInvalida;
+//import com.ventalen.exception.ErrorCantidadInvalida;
 import com.ventalen.exception.ErrorStockConIdInexistente;
 import com.ventalen.exception.ErrorStockYaExistente;
 import com.ventalen.funciones.ValidarCantidad;

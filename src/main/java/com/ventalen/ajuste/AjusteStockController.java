@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/ajustes")
+@RequestMapping("/ventalen")
 public class AjusteStockController {
 
     private static final String URL_BASE = "/ajustes";
@@ -42,8 +42,10 @@ public class AjusteStockController {
     public ResponseEntity<AjusteStockResponse> crear(@Valid @RequestBody AjusteStockRequest request) {
         AjusteStock ajuste = ajusteStockService.crear(
                 request.productoId(), request.cantidad(), request.motivoId(), request.detalles());
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(ajuste.getId()).toUri();
+        URI location = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(ajuste.getId()).toUri();
         return ResponseEntity.created(location).body(ajusteStockMapper.toResponse(ajuste));
     }
 }

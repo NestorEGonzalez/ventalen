@@ -1,5 +1,7 @@
 package com.ventalen.ingreso;
 
+import com.ventalen.detalleIngreso.DetalleIngresoRequest;
+
 import java.util.List;
 
 import jakarta.validation.Valid;

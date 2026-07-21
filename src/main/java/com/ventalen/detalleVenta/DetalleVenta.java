@@ -1,9 +1,10 @@
-package com.ventalen.venta;
+package com.ventalen.detalleVenta;
 
 import java.math.BigDecimal;
 
 import com.ventalen.producto.Producto;
 import com.ventalen.stock.Stock;
+import com.ventalen.venta.Venta;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

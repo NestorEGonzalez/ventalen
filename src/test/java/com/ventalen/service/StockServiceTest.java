@@ -20,7 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.ventalen.categoria.Categoria;
 import com.ventalen.exception.ErrorCantidadInvalida;
-import com.ventalen.exception.ErrorStockConIdInexistente;
+//import com.ventalen.exception.ErrorStockConIdInexistente;
 import com.ventalen.exception.ErrorStockYaExistente;
 import com.ventalen.producto.Producto;
 import com.ventalen.producto.ProductoService;

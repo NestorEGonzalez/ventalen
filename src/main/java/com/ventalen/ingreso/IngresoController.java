@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/ingresos")
+@RequestMapping("/ventalen")
 public class IngresoController {
 
     private static final String URL_BASE = "/ingresos";

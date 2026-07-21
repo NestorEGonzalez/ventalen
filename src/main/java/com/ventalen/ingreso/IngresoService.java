@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.auth.Usuario;
 import com.ventalen.auth.UsuarioRepository;
+import com.ventalen.detalleIngreso.DetalleIngreso;
+import com.ventalen.detalleIngreso.DetalleIngresoRepository;
+import com.ventalen.detalleIngreso.DetalleIngresoRequest;
 import com.ventalen.exception.ErrorIngresoInexistente;
 import com.ventalen.exception.ErrorProveedorInexistente;
 import com.ventalen.exception.ErrorUsuarioNoValido;

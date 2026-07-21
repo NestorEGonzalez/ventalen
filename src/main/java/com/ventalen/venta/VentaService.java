@@ -1,14 +1,18 @@
-package com.ventalen.venta;
+ package com.ventalen.venta;
 
 import java.util.List;
 
+//import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.auth.Usuario;
 import com.ventalen.auth.UsuarioRepository;
-import com.ventalen.exception.ErrorProductoConIdInexistente;
+import com.ventalen.detalleVenta.DetalleVenta;
+import com.ventalen.detalleVenta.DetalleVentaRepository;
+import com.ventalen.detalleVenta.DetalleVentaRequest;
+//import com.ventalen.exception.ErrorProductoConIdInexistente;
 import com.ventalen.exception.ErrorStockInsuficiente;
 import com.ventalen.exception.ErrorUsuarioNoValido;
 import com.ventalen.exception.ErrorVentaInexistente;
@@ -55,7 +59,10 @@ public class VentaService {
 
         for (DetalleVentaRequest detReq : detallesRequest) {
             Producto producto = productoService.buscarProductoConId(detReq.productoId());
-            Stock stock = stockRepository.findByProducto(producto).orElse(null);
+            
+            //Stock stock = stockRepository.findByProducto(producto).orElse(null);
+            Stock stock = stockRepository.findByProducto(producto)
+                    .orElseThrow(() -> new ErrorStockInsuficiente(producto.getId(), 0, detReq.cantidad()));
 
             int disponible = (stock != null) ? stock.getCantidad() : 0;
             if (disponible < detReq.cantidad()) {

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ventalen.auth.Usuario;
 import com.ventalen.auth.UsuarioRepository;
 import com.ventalen.exception.ErrorAjusteStockInexistente;
+import com.ventalen.exception.ErrorMotivoInexistente;
 import com.ventalen.exception.ErrorUsuarioNoValido;
 import com.ventalen.motivo.Motivo;
 import com.ventalen.motivo.MotivoRepository;
@@ -45,7 +46,7 @@ public class AjusteStockService {
 
     public AjusteStock buscarPorId(Long id) {
         return ajusteStockRepository.findById(id)
-                .orElseThrow(() -> new ErrorAjusteStockInexistente(id));
+                                        .orElseThrow(() -> new ErrorAjusteStockInexistente(id));
     }
 
     @Transactional
@@ -53,10 +54,12 @@ public class AjusteStockService {
         Usuario usuario = obtenerUsuarioAutenticado();
         Producto producto = productoService.buscarProductoConId(productoId);
         Motivo motivo = motivoRepository.findById(motivoId)
-                .orElseThrow(() -> new com.ventalen.exception.ErrorMotivoInexistente(motivoId));
+                                        .orElseThrow(() -> 
+                                        new ErrorMotivoInexistente(motivoId));
         Stock stock = stockRepository.findByProducto(producto)
-                .orElseGet(() -> stockRepository.save(new Stock(producto, 0)));
+                                   .orElseGet(() -> stockRepository.save(new Stock(producto, 0)));
 
+        
         int ajuste = motivo.getAfectaPositivo() ? cantidad : -cantidad;
         stock.setCantidad(stock.getCantidad() + ajuste);
         stockRepository.save(stock);
@@ -75,6 +78,7 @@ public class AjusteStockService {
     private Usuario obtenerUsuarioAutenticado() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE));
+                                    .orElseThrow(() -> 
+                                        new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE));
     }
 }

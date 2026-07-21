@@ -1,4 +1,4 @@
-package com.ventalen.venta;
+package com.ventalen.detalleVenta;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package com.ventalen.ingreso;
+package com.ventalen.detalleVenta;
 
 import java.util.List;
 
@@ -6,11 +6,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface DetalleIngresoMapper {
+public interface DetalleVentaMapper {
 
     @Mapping(target = "productoId", source = "producto.id")
     @Mapping(target = "productoNombre", source = "producto.nombre")
-    DetalleIngresoResponse toResponse(DetalleIngreso detalle);
+    DetalleVentaResponse toResponse(DetalleVenta detalle);
 
-    List<DetalleIngresoResponse> toResponseList(List<DetalleIngreso> detalles);
+    List<DetalleVentaResponse> toResponseList(List<DetalleVenta> detalles);
 }

@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/motivos")
+@RequestMapping("/ventalen")
 public class MotivoController {
 
     private static final String URL_BASE = "/motivos";
@@ -42,15 +42,17 @@ public class MotivoController {
     @PostMapping(URL_BASE)
     public ResponseEntity<MotivoResponse> crear(@Valid @RequestBody MotivoRequest request) {
         Motivo motivo = motivoService.crear(request.motivo(), request.afectaPositivo());
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(motivo.getId()).toUri();
+        URI location = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(motivo.getId()).toUri();
         return ResponseEntity.created(location).body(motivoMapper.toResponse(motivo));
     }
 
     @PatchMapping(URL_BASE + "/{id}")
     public ResponseEntity<MotivoResponse> modificar(@PathVariable Long id,
                                                     @Valid @RequestBody MotivoRequest request) {
-        Motivo motivo = motivoService.modificar(id, request.motivo(), request.afectaPositivo());
+        Motivo motivo = motivoService.modificar(id, request.motivo());
         return ResponseEntity.accepted().body(motivoMapper.toResponse(motivo));
     }
 

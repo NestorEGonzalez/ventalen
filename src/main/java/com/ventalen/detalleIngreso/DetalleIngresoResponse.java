@@ -1,4 +1,5 @@
-package com.ventalen.ingreso;
+package com.ventalen.detalleIngreso;
+
 
 import java.math.BigDecimal;
 

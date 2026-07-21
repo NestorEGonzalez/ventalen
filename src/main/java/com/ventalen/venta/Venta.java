@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ventalen.auth.Usuario;
+import com.ventalen.detalleVenta.DetalleVenta;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

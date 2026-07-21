@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ventalen.proveedor.Proveedor;
 import com.ventalen.auth.Usuario;
+import com.ventalen.detalleIngreso.DetalleIngreso;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

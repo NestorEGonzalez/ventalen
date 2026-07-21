@@ -1,6 +1,8 @@
 package com.ventalen.ingreso;
 
 import com.ventalen.auth.Usuario;
+import com.ventalen.detalleIngreso.DetalleIngreso;
+import com.ventalen.detalleIngreso.DetalleIngresoResponse;
 import com.ventalen.proveedor.Proveedor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-07-04T17:03:43-0300",
+    date = "2026-07-21T15:47:17-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.46.100.v20260624-0231, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component

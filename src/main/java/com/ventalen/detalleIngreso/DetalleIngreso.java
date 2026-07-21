@@ -1,7 +1,11 @@
-package com.ventalen.ingreso;
+package com.ventalen.detalleIngreso;
 
 import java.math.BigDecimal;
 
+import com.ventalen.exception.ErrorCantidadInvalida;
+import com.ventalen.funciones.ValidarCantidad;
+import com.ventalen.funciones.ValidarPrecio;
+import com.ventalen.ingreso.Ingreso;
 import com.ventalen.producto.Producto;
 import com.ventalen.stock.Stock;
 
@@ -14,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "detalle_ingreso")
@@ -31,9 +36,11 @@ public class DetalleIngreso {
     @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
 
+    @PositiveOrZero(message = ErrorCantidadInvalida.ERROR_CANTIDAD_NEGATIVA)
     @Column(nullable = false)
     private Integer cantidad;
 
+    @PositiveOrZero(message = ErrorCantidadInvalida.ERROR_CANTIDAD_NEGATIVA)
     @Column(nullable = false)
     private BigDecimal precioMayorista;
 
@@ -68,6 +75,7 @@ public class DetalleIngreso {
     }
 
     public void setCantidad(Integer cantidad){
+        ValidarCantidad.validarCantidad(cantidad);
         this.cantidad = cantidad;
     }
 
@@ -76,7 +84,7 @@ public class DetalleIngreso {
     }
 
     public void setPrecioMayorista(BigDecimal precioMayorista){
-        this.precioMayorista = precioMayorista;
+        this.precioMayorista = ValidarPrecio.validarPrecio(precioMayorista);
     }
 
     public Stock getStock(){
