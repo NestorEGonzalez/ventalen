@@ -1,4 +1,65 @@
 -------------------------------------------------------------------------------
 Test set: com.ventalen.controller.CategoriaControllerTest
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.77 s -- in com.ventalen.controller.CategoriaControllerTest
+Tests run: 8, Failures: 7, Errors: 0, Skipped: 0, Time elapsed: 2.245 s <<< FAILURE! -- in com.ventalen.controller.CategoriaControllerTest
+com.ventalen.controller.CategoriaControllerTest.test_noSePuedeGuardarUnaCategoriaExistente -- Time elapsed: 0.030 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<409> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_noSePuedeGuardarUnaCategoriaExistente(CategoriaControllerTest.java:147)
+
+com.ventalen.controller.CategoriaControllerTest.test_obtenerTodasLasCategorias -- Time elapsed: 0.023 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_obtenerTodasLasCategorias(CategoriaControllerTest.java:114)
+
+com.ventalen.controller.CategoriaControllerTest.test_crearUnaCategoria -- Time elapsed: 0.020 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<201> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_crearUnaCategoria(CategoriaControllerTest.java:130)
+
+com.ventalen.controller.CategoriaControllerTest.test_alBuscarUnIdInexistenteSeObtieneUnError -- Time elapsed: 0.028 s <<< FAILURE!
+java.lang.AssertionError: No value at JSON path "$.mensaje"
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:350)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:148)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:111)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_alBuscarUnIdInexistenteSeObtieneUnError(CategoriaControllerTest.java:212)
+Caused by: java.lang.IllegalArgumentException: json can not be null or empty
+	at com.jayway.jsonpath.internal.Utils.notEmpty(Utils.java:401)
+	at com.jayway.jsonpath.JsonPath.read(JsonPath.java:390)
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:347)
+	... 4 more
+
+com.ventalen.controller.CategoriaControllerTest.test_noSePuedeCrearUnaCategoriaConNombreNullOVacio -- Time elapsed: 0.030 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<400> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_noSePuedeCrearUnaCategoriaConNombreNullOVacio(CategoriaControllerTest.java:159)
+
+com.ventalen.controller.CategoriaControllerTest.test_borrarUnaCategoria -- Time elapsed: 0.025 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<204> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_borrarUnaCategoria(CategoriaControllerTest.java:177)
+
+com.ventalen.controller.CategoriaControllerTest.test_sePuedeObtenerUnaCategoriaPorId -- Time elapsed: 0.025 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.CategoriaControllerTest.test_sePuedeObtenerUnaCategoriaPorId(CategoriaControllerTest.java:198)
+

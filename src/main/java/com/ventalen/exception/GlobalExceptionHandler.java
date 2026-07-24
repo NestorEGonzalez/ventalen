@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler({ErrorCategoriaYaExistente.class, ErrorNombreProductoExistente.class, ErrorUsuarioNoValido.class})
+    @ExceptionHandler({ErrorCategoriaYaExistente.class, ErrorNombreProductoExistente.class,
+                       ErrorClienteYaExistente.class, ErrorProveedorYaExistente.class,
+                       ErrorUsuarioNoValido.class})
     public ResponseEntity<ErrorResponse> duplicado(RuntimeException ex){
         return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
    }

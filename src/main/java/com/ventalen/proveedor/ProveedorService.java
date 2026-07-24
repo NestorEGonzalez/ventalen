@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.exception.ErrorProveedorInexistente;
+import com.ventalen.exception.ErrorProveedorYaExistente;
+import com.ventalen.funciones.ValidarString;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,7 +29,11 @@ public class ProveedorService {
 
     @Transactional
     public Proveedor crear(String proveedor, String corredor, String telefono) {
-        return proveedorRepository.save(new Proveedor(proveedor, corredor, telefono));
+        String nombreNormalizado = ValidarString.validarString(proveedor);
+        if (proveedorRepository.existsByProveedor(nombreNormalizado)) {
+            throw new ErrorProveedorYaExistente(nombreNormalizado);
+        }
+        return proveedorRepository.save(new Proveedor(nombreNormalizado, corredor, telefono));
     }
 
     @Transactional

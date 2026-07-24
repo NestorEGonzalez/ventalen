@@ -38,7 +38,8 @@ public class SecurityConfig {
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //indica que no se guarda estado en el server, todo se maneja con JWT token.
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/register").hasRole(ADMIN)   
+                    .requestMatchers(HttpMethod.POST, "/auth/register").hasRole(ADMIN)
+                    .requestMatchers(HttpMethod.POST, "/auth/change-password").authenticated()
                     .requestMatchers(HttpMethod.GET, URL).permitAll()
                     .requestMatchers(HttpMethod.POST, URL).hasRole(ADMIN)
                     .requestMatchers(HttpMethod.PATCH, URL).hasRole(ADMIN)

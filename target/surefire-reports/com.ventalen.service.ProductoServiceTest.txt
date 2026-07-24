@@ -1,0 +1,26 @@
+-------------------------------------------------------------------------------
+Test set: com.ventalen.service.ProductoServiceTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.213 s <<< FAILURE! -- in com.ventalen.service.ProductoServiceTest
+com.ventalen.service.ProductoServiceTest.test_NoSePuedeBorrarUnProductoQueNoExiste -- Time elapsed: 0.020 s <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.ventalen.service.ProductoServiceTest.test_NoSePuedeBorrarUnProductoQueNoExiste(ProductoServiceTest.java:111)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+	at org.mockito.junit.jupiter.MockitoExtension.lambda$afterEach$2(MockitoExtension.java:200)
+	at java.base/java.util.Optional.ifPresent(Optional.java:178)
+	at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:198)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.ventalen.service.ProductoServiceTest.test_SePuedeBorrarUnProducto -- Time elapsed: 0.009 s <<< ERROR!
+com.ventalen.exception.ErrorProductoConIdInexistente: El producto con id 1, no existe.
+	at com.ventalen.producto.ProductoService.lambda$obtenerProductoConId$1(ProductoService.java:97)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.ventalen.producto.ProductoService.obtenerProductoConId(ProductoService.java:96)
+	at com.ventalen.producto.ProductoService.borrarProductoConId(ProductoService.java:70)
+	at com.ventalen.service.ProductoServiceTest.test_SePuedeBorrarUnProducto(ProductoServiceTest.java:100)
+

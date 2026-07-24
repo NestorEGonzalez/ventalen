@@ -1,0 +1,125 @@
+-------------------------------------------------------------------------------
+Test set: com.ventalen.controller.ProductoControllerTest
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 13, Errors: 0, Skipped: 0, Time elapsed: 7.738 s <<< FAILURE! -- in com.ventalen.controller.ProductoControllerTest
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConNombreNuloOVacioYSeObtieneUnHTTPStatus400 -- Time elapsed: 0.530 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<400> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConNombreNuloOVacioYSeObtieneUnHTTPStatus400(ProductoControllerTest.java:119)
+
+com.ventalen.controller.ProductoControllerTest.test_sePuedeCambiarElNombreDeUnProductoYSeObtieneUnHTTPStatus202 -- Time elapsed: 0.134 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<202> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_sePuedeCambiarElNombreDeUnProductoYSeObtieneUnHTTPStatus202(ProductoControllerTest.java:225)
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCambiarElPrecioDeUnProductoSiEsNullONegativoYSeObtieneUnHTTPStatus202 -- Time elapsed: 0.040 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<400> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCambiarElPrecioDeUnProductoSiEsNullONegativoYSeObtieneUnHTTPStatus202(ProductoControllerTest.java:284)
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeBorrarUnProductoPorIdSiNoExisteYSeObtieneUnHTTPStatus400 -- Time elapsed: 0.231 s <<< FAILURE!
+java.lang.AssertionError: No value at JSON path "$.mensaje"
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:350)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:148)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:111)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeBorrarUnProductoPorIdSiNoExisteYSeObtieneUnHTTPStatus400(ProductoControllerTest.java:205)
+Caused by: java.lang.IllegalArgumentException: json can not be null or empty
+	at com.jayway.jsonpath.internal.Utils.notEmpty(Utils.java:401)
+	at com.jayway.jsonpath.JsonPath.read(JsonPath.java:390)
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:347)
+	... 4 more
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConPrecioNuloONegativoYSeObtieneUnError -- Time elapsed: 0.039 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<400> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConPrecioNuloONegativoYSeObtieneUnError(ProductoControllerTest.java:139)
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConCategoriaNulaOInexistenteYSeObtieneUnError -- Time elapsed: 0.079 s <<< FAILURE!
+java.lang.AssertionError: No value at JSON path "$.mensaje"
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:350)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertExistsAndReturn(JsonPathExpectationsHelper.java:386)
+	at org.springframework.test.util.JsonPathExpectationsHelper.exists(JsonPathExpectationsHelper.java:239)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$exists$0(JsonPathResultMatchers.java:123)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConCategoriaNulaOInexistenteYSeObtieneUnError(ProductoControllerTest.java:167)
+Caused by: java.lang.IllegalArgumentException: json can not be null or empty
+	at com.jayway.jsonpath.internal.Utils.notEmpty(Utils.java:401)
+	at com.jayway.jsonpath.JsonPath.read(JsonPath.java:390)
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:347)
+	... 5 more
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCambiarLaCategoriaDeUnProductoSiLaMismaNoExisteYSeObtieneUnHTTPStatus400 -- Time elapsed: 0.030 s <<< FAILURE!
+java.lang.AssertionError: No value at JSON path "$.mensaje"
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:350)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertExistsAndReturn(JsonPathExpectationsHelper.java:386)
+	at org.springframework.test.util.JsonPathExpectationsHelper.exists(JsonPathExpectationsHelper.java:239)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$exists$0(JsonPathResultMatchers.java:123)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCambiarLaCategoriaDeUnProductoSiLaMismaNoExisteYSeObtieneUnHTTPStatus400(ProductoControllerTest.java:334)
+Caused by: java.lang.IllegalArgumentException: json can not be null or empty
+	at com.jayway.jsonpath.internal.Utils.notEmpty(Utils.java:401)
+	at com.jayway.jsonpath.JsonPath.read(JsonPath.java:390)
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:347)
+	... 5 more
+
+com.ventalen.controller.ProductoControllerTest.test_sePuedeBorrarUnProductoPorIdYSeObtieneUnHTTPStatus204 -- Time elapsed: 0.046 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<204> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_sePuedeBorrarUnProductoPorIdYSeObtieneUnHTTPStatus204(ProductoControllerTest.java:190)
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCambiarElNombreDeUnProductoSiElNuevoEsNullOVacioOYaExisteYSeObtieneUnHTTPStatus400 -- Time elapsed: 0.031 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<400> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCambiarElNombreDeUnProductoSiElNuevoEsNullOVacioOYaExisteYSeObtieneUnHTTPStatus400(ProductoControllerTest.java:237)
+
+com.ventalen.controller.ProductoControllerTest.test_sePuedeCambiarLaCategoriaDeUnProductoYSeObtieneElProductoYUnHTTPStatus202 -- Time elapsed: 0.048 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<202> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_sePuedeCambiarLaCategoriaDeUnProductoYSeObtieneElProductoYUnHTTPStatus202(ProductoControllerTest.java:317)
+
+com.ventalen.controller.ProductoControllerTest.test_sePuedeCambiarElPrecioDeUnProductoYSeObtieneUnHTTPStatus202 -- Time elapsed: 0.028 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<202> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_sePuedeCambiarElPrecioDeUnProductoYSeObtieneUnHTTPStatus202(ProductoControllerTest.java:269)
+
+com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConNombreYaExistenteYSeObtieneUnError -- Time elapsed: 0.021 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<409> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_noSePuedeCrearUnProductoConNombreYaExistenteYSeObtieneUnError(ProductoControllerTest.java:181)
+
+com.ventalen.controller.ProductoControllerTest.test_sePuedeCrearUnProductoYSeObtieneElProductoYStatus200 -- Time elapsed: 0.027 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<201> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$0(StatusResultMatchers.java:600)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
+	at com.ventalen.controller.ProductoControllerTest.test_sePuedeCrearUnProductoYSeObtieneElProductoYStatus200(ProductoControllerTest.java:97)
+

@@ -1,23 +1,26 @@
 package com.ventalen.ingreso;
 
 import com.ventalen.auth.Usuario;
-import com.ventalen.detalleIngreso.DetalleIngreso;
+import com.ventalen.detalleIngreso.DetalleIngresoMapper;
 import com.ventalen.detalleIngreso.DetalleIngresoResponse;
 import com.ventalen.proveedor.Proveedor;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-07-21T15:47:17-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.46.100.v20260624-0231, environment: Java 21.0.11 (Eclipse Adoptium)"
+    date = "2026-07-22T20:47:42-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Debian)"
 )
 @Component
 public class IngresoMapperImpl implements IngresoMapper {
+
+    @Autowired
+    private DetalleIngresoMapper detalleIngresoMapper;
 
     @Override
     public IngresoResponse toResponse(Ingreso ingreso) {
@@ -37,7 +40,7 @@ public class IngresoMapperImpl implements IngresoMapper {
         usuario = ingresoUsuarioUsername( ingreso );
         id = ingreso.getId();
         fecha = ingreso.getFecha();
-        detalles = detalleIngresoListToDetalleIngresoResponseList( ingreso.getDetalles() );
+        detalles = detalleIngresoMapper.toResponseList( ingreso.getDetalles() );
 
         IngresoResponse ingresoResponse = new IngresoResponse( id, fecha, proveedorId, proveedorNombre, usuario, detalles );
 
@@ -101,39 +104,5 @@ public class IngresoMapperImpl implements IngresoMapper {
             return null;
         }
         return username;
-    }
-
-    protected DetalleIngresoResponse detalleIngresoToDetalleIngresoResponse(DetalleIngreso detalleIngreso) {
-        if ( detalleIngreso == null ) {
-            return null;
-        }
-
-        Long id = null;
-        Integer cantidad = null;
-        BigDecimal precioMayorista = null;
-
-        id = detalleIngreso.getId();
-        cantidad = detalleIngreso.getCantidad();
-        precioMayorista = detalleIngreso.getPrecioMayorista();
-
-        Long productoId = null;
-        String productoNombre = null;
-
-        DetalleIngresoResponse detalleIngresoResponse = new DetalleIngresoResponse( id, productoId, productoNombre, cantidad, precioMayorista );
-
-        return detalleIngresoResponse;
-    }
-
-    protected List<DetalleIngresoResponse> detalleIngresoListToDetalleIngresoResponseList(List<DetalleIngreso> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<DetalleIngresoResponse> list1 = new ArrayList<DetalleIngresoResponse>( list.size() );
-        for ( DetalleIngreso detalleIngreso : list ) {
-            list1.add( detalleIngresoToDetalleIngresoResponse( detalleIngreso ) );
-        }
-
-        return list1;
     }
 }

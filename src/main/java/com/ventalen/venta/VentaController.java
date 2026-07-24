@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/ventas")
+@RequestMapping("/ventalen")
 public class VentaController {
 
     private static final String URL_BASE = "/ventas";

@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------------
+Test set: com.ventalen.service.StockServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.071 s <<< FAILURE! -- in com.ventalen.service.StockServiceTest
+com.ventalen.service.StockServiceTest.test_crearStockConCantidadInvalidaLanzaExcepcion -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.ventalen.exception.ErrorCantidadInvalida> but was: <java.lang.IllegalArgumentException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:68)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3223)
+	at com.ventalen.service.StockServiceTest.test_crearStockConCantidadInvalidaLanzaExcepcion(StockServiceTest.java:69)
+Caused by: java.lang.IllegalArgumentException: La cantidad no puede ser negativa.
+	at com.ventalen.funciones.ValidarCantidad.validarCantidad(ValidarCantidad.java:11)
+	at com.ventalen.stock.StockService.crearStock(StockService.java:29)
+	at com.ventalen.service.StockServiceTest.lambda$test_crearStockConCantidadInvalidaLanzaExcepcion$0(StockServiceTest.java:70)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:54)
+	... 3 more
+

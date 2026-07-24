@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-
 public class AuthController {
     private final AuthService authService;
 
@@ -26,5 +25,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest){
         return ResponseEntity.ok(authService.register(registerRequest));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        authService.changePassword(changePasswordRequest);
+        return ResponseEntity.ok("Contraseña actualizada correctamente.");
     }
 }

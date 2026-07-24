@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.exception.ErrorClienteInexistente;
+import com.ventalen.exception.ErrorClienteYaExistente;
 import com.ventalen.funciones.ValidarString;
 
 @Service
@@ -29,7 +30,11 @@ public class ClienteService {
 
     @Transactional
     public Cliente crear(String nyap, String telefono) {
-        return clienteRepository.save(new Cliente(nyap, telefono));
+        String nombreNormalizado = ValidarString.validarString(nyap);
+        if (clienteRepository.existsByNyap(nombreNormalizado)) {
+            throw new ErrorClienteYaExistente(nombreNormalizado);
+        }
+        return clienteRepository.save(new Cliente(nombreNormalizado, telefono));
     }
 
     @Transactional

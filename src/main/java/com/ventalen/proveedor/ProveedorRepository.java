@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProveedorRepository extends JpaRepository<Proveedor, Long> {
     List<Proveedor> findAllByActivoTrue();
+
+    boolean existsByProveedor(String proveedor);
 }

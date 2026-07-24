@@ -10,6 +10,7 @@ import com.ventalen.auth.Usuario;
 import com.ventalen.auth.UsuarioRepository;
 import com.ventalen.exception.ErrorAjusteStockInexistente;
 import com.ventalen.exception.ErrorMotivoInexistente;
+import com.ventalen.exception.ErrorStockInsuficiente;
 import com.ventalen.exception.ErrorUsuarioNoValido;
 import com.ventalen.motivo.Motivo;
 import com.ventalen.motivo.MotivoRepository;
@@ -59,7 +60,10 @@ public class AjusteStockService {
         Stock stock = stockRepository.findByProducto(producto)
                                    .orElseGet(() -> stockRepository.save(new Stock(producto, 0)));
 
-        
+        if (!motivo.getAfectaPositivo() && stock.getCantidad() < cantidad) {
+            throw new ErrorStockInsuficiente(producto.getId(), stock.getCantidad(), cantidad);
+        }
+
         int ajuste = motivo.getAfectaPositivo() ? cantidad : -cantidad;
         stock.setCantidad(stock.getCantidad() + ajuste);
         stockRepository.save(stock);
