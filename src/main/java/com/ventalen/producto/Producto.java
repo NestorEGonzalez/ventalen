@@ -91,4 +91,8 @@ public class Producto {
         this.activo = false;
     }
 
+    public boolean isActivo(){
+        return this.activo;
+    }
+
 }

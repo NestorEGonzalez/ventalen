@@ -92,6 +92,7 @@
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/venta/VentaService.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/ajuste/AjusteStockRequest.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/detalleIngreso/DetalleIngresoMapper.java
+/home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorProductoInactivo.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorPrecioInvalido.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorStockYaExistente.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/detalleVenta/DetalleVenta.java
@@ -101,6 +102,7 @@
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorCategoriaInexistente.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/proveedor/ProveedorMapper.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorCategoriaYaExistente.java
+/home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorClienteInactivo.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorVentaInexistente.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/venta/VentaRepository.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/ingreso/IngresoService.java

@@ -10,6 +10,8 @@ public record VentaResponse(
     LocalDate fecha,
     Boolean pagado,
     String usuario,
+    Long clienteId,
+    String clienteNombre,
     List<DetalleVentaResponse> detalles
 ) {
 }

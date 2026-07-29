@@ -17,6 +17,11 @@ public class GlobalExceptionHandler {
         return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
    }
 
+    @ExceptionHandler({ErrorProductoInactivo.class, ErrorClienteInactivo.class})
+    public ResponseEntity<ErrorResponse> inactivo(RuntimeException ex){
+        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+   }
+
     @ExceptionHandler({ErrorCategoriaInexistente.class, ErrorProductoConIdInexistente.class,
                        ErrorStockConIdInexistente.class, ErrorClienteInexistente.class,
                        ErrorProveedorInexistente.class, ErrorVentaInexistente.class,
@@ -32,7 +37,8 @@ public class GlobalExceptionHandler {
         return buildResponse(msj, HttpStatus.BAD_REQUEST);
    }
 
-   @ExceptionHandler({ErrorCampoVacioONulo.class, ErrorPrecioInvalido.class, ErrorCantidadInvalida.class, ErrorStockInsuficiente.class})
+    @ExceptionHandler({ErrorCampoVacioONulo.class, ErrorPrecioInvalido.class, ErrorCantidadInvalida.class,
+                       ErrorStockInsuficiente.class})
    public ResponseEntity<ErrorResponse> validacion(RuntimeException ex){
     return buildResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
    }

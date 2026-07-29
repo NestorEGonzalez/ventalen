@@ -9,10 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ventalen.auth.Usuario;
 import com.ventalen.auth.UsuarioRepository;
+import com.ventalen.cliente.Cliente;
+import com.ventalen.cliente.ClienteRepository;
 import com.ventalen.detalleVenta.DetalleVenta;
 import com.ventalen.detalleVenta.DetalleVentaRepository;
 import com.ventalen.detalleVenta.DetalleVentaRequest;
-//import com.ventalen.exception.ErrorProductoConIdInexistente;
+import com.ventalen.exception.ErrorClienteInactivo;
+import com.ventalen.exception.ErrorClienteInexistente;
 import com.ventalen.exception.ErrorStockInsuficiente;
 import com.ventalen.exception.ErrorUsuarioNoValido;
 import com.ventalen.exception.ErrorVentaInexistente;
@@ -30,17 +33,20 @@ public class VentaService {
     private final ProductoService productoService;
     private final StockRepository stockRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ClienteRepository clienteRepository;
 
     public VentaService(VentaRepository ventaRepository,
                         DetalleVentaRepository detalleVentaRepository,
                         ProductoService productoService,
                         StockRepository stockRepository,
-                        UsuarioRepository usuarioRepository) {
+                        UsuarioRepository usuarioRepository,
+                        ClienteRepository clienteRepository) {
         this.ventaRepository = ventaRepository;
         this.detalleVentaRepository = detalleVentaRepository;
         this.productoService = productoService;
         this.stockRepository = stockRepository;
         this.usuarioRepository = usuarioRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     public List<Venta> obtenerTodas() {
@@ -53,9 +59,18 @@ public class VentaService {
     }
 
     @Transactional
-    public Venta crear(Boolean pagado, List<DetalleVentaRequest> detallesRequest) {
+    public Venta crear(Boolean pagado, Long clienteId, List<DetalleVentaRequest> detallesRequest) {
         Usuario usuario = obtenerUsuarioAutenticado();
         Venta venta = new Venta(usuario, pagado);
+
+        if (clienteId != null) {
+            Cliente cliente = clienteRepository.findById(clienteId)
+                    .orElseThrow(() -> new ErrorClienteInexistente(clienteId));
+            if (!cliente.getActivo()) {
+                throw new ErrorClienteInactivo(clienteId);
+            }
+            venta.setCliente(cliente);
+        }
 
         for (DetalleVentaRequest detReq : detallesRequest) {
             Producto producto = productoService.buscarProductoConId(detReq.productoId());

@@ -12,6 +12,7 @@ import com.ventalen.detalleIngreso.DetalleIngreso;
 import com.ventalen.detalleIngreso.DetalleIngresoRepository;
 import com.ventalen.detalleIngreso.DetalleIngresoRequest;
 import com.ventalen.exception.ErrorIngresoInexistente;
+import com.ventalen.exception.ErrorProductoInactivo;
 import com.ventalen.exception.ErrorProveedorInexistente;
 import com.ventalen.exception.ErrorUsuarioNoValido;
 import com.ventalen.producto.Producto;
@@ -65,6 +66,9 @@ public class IngresoService {
 
         for (DetalleIngresoRequest detReq : detallesRequest) {
             Producto producto = productoService.buscarProductoConId(detReq.productoId());
+            if (!producto.isActivo()) {
+                throw new ErrorProductoInactivo(producto.getId());
+            }
             Stock stock = stockRepository.findByProducto(producto)
                     .orElseGet(() -> stockRepository.save(new Stock(producto, 0)));
 

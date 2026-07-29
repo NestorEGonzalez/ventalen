@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 public record VentaRequest(
     Boolean pagado,
+    Long clienteId,
     @NotEmpty @Valid
     List<DetalleVentaRequest> detalles
 ) {

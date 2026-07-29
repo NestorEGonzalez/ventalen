@@ -1,6 +1,7 @@
 package com.ventalen.venta;
 
 import com.ventalen.auth.Usuario;
+import com.ventalen.cliente.Cliente;
 import com.ventalen.detalleVenta.DetalleVentaMapper;
 import com.ventalen.detalleVenta.DetalleVentaResponse;
 import java.time.LocalDate;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-07-22T20:47:42-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.11 (Debian)"
+    date = "2026-07-27T15:19:18-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.46.100.v20260624-0231, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component
 public class VentaMapperImpl implements VentaMapper {
@@ -28,18 +29,22 @@ public class VentaMapperImpl implements VentaMapper {
         }
 
         String usuario = null;
+        Long clienteId = null;
+        String clienteNombre = null;
         Long id = null;
         LocalDate fecha = null;
         Boolean pagado = null;
         List<DetalleVentaResponse> detalles = null;
 
         usuario = ventaUsuarioUsername( venta );
+        clienteId = ventaClienteId( venta );
+        clienteNombre = ventaClienteNyap( venta );
         id = venta.getId();
         fecha = venta.getFecha();
         pagado = venta.getPagado();
         detalles = detalleVentaMapper.toResponseList( venta.getDetalles() );
 
-        VentaResponse ventaResponse = new VentaResponse( id, fecha, pagado, usuario, detalles );
+        VentaResponse ventaResponse = new VentaResponse( id, fecha, pagado, usuario, clienteId, clienteNombre, detalles );
 
         return ventaResponse;
     }
@@ -71,5 +76,35 @@ public class VentaMapperImpl implements VentaMapper {
             return null;
         }
         return username;
+    }
+
+    private Long ventaClienteId(Venta venta) {
+        if ( venta == null ) {
+            return null;
+        }
+        Cliente cliente = venta.getCliente();
+        if ( cliente == null ) {
+            return null;
+        }
+        Long id = cliente.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    private String ventaClienteNyap(Venta venta) {
+        if ( venta == null ) {
+            return null;
+        }
+        Cliente cliente = venta.getCliente();
+        if ( cliente == null ) {
+            return null;
+        }
+        String nyap = cliente.getNyap();
+        if ( nyap == null ) {
+            return null;
+        }
+        return nyap;
     }
 }

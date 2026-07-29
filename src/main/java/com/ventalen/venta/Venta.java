@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ventalen.auth.Usuario;
+import com.ventalen.cliente.Cliente;
 import com.ventalen.detalleVenta.DetalleVenta;
 
 import jakarta.persistence.CascadeType;
@@ -37,6 +38,10 @@ public class Venta {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
+
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleVenta> detalles = new ArrayList<>();
 
@@ -65,6 +70,14 @@ public class Venta {
 
     public List<DetalleVenta> getDetalles(){
         return this.detalles;
+    }
+
+    public Cliente getCliente(){
+        return this.cliente;
+    }
+
+    public void setCliente(Cliente cliente){
+        this.cliente = cliente;
     }
 
     public void addDetalle(DetalleVenta detalle){

@@ -39,7 +39,7 @@ public class VentaController {
 
     @PostMapping(URL_BASE)
     public ResponseEntity<VentaResponse> crear(@Valid @RequestBody VentaRequest request) {
-        Venta venta = ventaService.crear(request.pagado(), request.detalles());
+        Venta venta = ventaService.crear(request.pagado(), request.clienteId(), request.detalles());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(venta.getId()).toUri();
         return ResponseEntity.created(location).body(ventaMapper.toResponse(venta));

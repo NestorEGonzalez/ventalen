@@ -11,6 +11,8 @@ import com.ventalen.detalleVenta.DetalleVentaMapper;
 public interface VentaMapper {
 
     @Mapping(target = "usuario", source = "venta.usuario.username")
+    @Mapping(target = "clienteId", source = "venta.cliente.id")
+    @Mapping(target = "clienteNombre", source = "venta.cliente.nyap")
     VentaResponse toResponse(Venta venta);
 
     List<VentaResponse> toResponseList(List<Venta> ventas);

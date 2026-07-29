@@ -20,6 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.ventalen.auth.Usuario;
 import com.ventalen.auth.UsuarioRepository;
+import com.ventalen.exception.ErrorMotivoInexistente;
+import com.ventalen.exception.ErrorProductoConIdInexistente;
+import com.ventalen.exception.ErrorProductoInactivo;
 import com.ventalen.exception.ErrorStockInsuficiente;
 import com.ventalen.motivo.Motivo;
 import com.ventalen.motivo.MotivoRepository;
@@ -60,7 +63,7 @@ class AjusteStockServiceTest {
     }
 
     @Test
-    void noSePuedeDescontarStockSiNoHaySuficiente() {
+    void test01_noSePuedeDescontarStockSiNoHaySuficiente() {
         Usuario usuario = new Usuario();
         Producto producto = new Producto();
         Stock stockInicial = new Stock(producto, 3);
@@ -77,7 +80,7 @@ class AjusteStockServiceTest {
     }
 
     @Test
-    void ajustePositivoSumaStock() {
+    void test02_ajustePositivoSumaStock() {
         Usuario usuario = new Usuario();
         Producto producto = new Producto();
         Stock stockInicial = new Stock(producto, 4);
@@ -100,7 +103,7 @@ class AjusteStockServiceTest {
     }
 
     @Test
-    void ajusteNegativoRestaStock() {
+    void test03_ajusteNegativoRestaStock() {
         Usuario usuario = new Usuario();
         Producto producto = new Producto();
         Stock stockInicial = new Stock(producto, 9);
@@ -120,5 +123,65 @@ class AjusteStockServiceTest {
         assertEquals(6, stockInicial.getCantidad());
         verify(stockRepository).save(stockInicial);
         assertEquals("Merma", ajuste.getMotivo().getMotivo());
+    }
+
+    @Test
+    void test04_noSePuedeAjustarProductoInexistente() {
+        Usuario usuario = new Usuario();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin", "pwd"));
+
+        when(usuarioRepository.findByUsername("admin")).thenReturn(Optional.of(usuario));
+        when(productoService.buscarProductoConId(99L)).thenThrow(new ErrorProductoConIdInexistente(99L));
+
+        assertThrows(ErrorProductoConIdInexistente.class, () -> ajusteStockService.crear(99L, 5, 1L, "test"));
+    }
+
+    @Test
+    void test05_noSePuedeAjustarProductoInactivo() {
+        Usuario usuario = new Usuario();
+        Producto producto = new Producto();
+        producto.desactivarProducto();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin", "pwd"));
+
+        when(usuarioRepository.findByUsername("admin")).thenReturn(Optional.of(usuario));
+        when(productoService.buscarProductoConId(10L)).thenReturn(producto);
+
+        assertThrows(ErrorProductoInactivo.class, () -> ajusteStockService.crear(10L, 5, 1L, "inactivo"));
+    }
+
+    @Test
+    void test06_ajustePositivoEnStockInexistenteCreaStockEnCeroYSuma() {
+        Usuario usuario = new Usuario();
+        Producto producto = new Producto();
+        Motivo motivo = new Motivo("Ingreso extra", true);
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin", "pwd"));
+
+        when(usuarioRepository.findByUsername("admin")).thenReturn(Optional.of(usuario));
+        when(productoService.buscarProductoConId(23L)).thenReturn(producto);
+        when(motivoRepository.findById(5L)).thenReturn(Optional.of(motivo));
+        when(stockRepository.findByProducto(producto)).thenReturn(Optional.empty());
+        when(stockRepository.save(any(Stock.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(ajusteStockRepository.save(any(AjusteStock.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AjusteStock ajuste = ajusteStockService.crear(23L, 7, 5L, "nuevo stock");
+
+        assertEquals(7, ajuste.getStock().getCantidad());
+    }
+
+    @Test
+    void test07_noSePuedeAjustarMotivoInexistente() {
+        Usuario usuario = new Usuario();
+        Producto producto = new Producto();
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin", "pwd"));
+
+        when(usuarioRepository.findByUsername("admin")).thenReturn(Optional.of(usuario));
+        when(productoService.buscarProductoConId(24L)).thenReturn(producto);
+        when(motivoRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ErrorMotivoInexistente.class, () -> ajusteStockService.crear(24L, 2, 99L, "sin motivo"));
     }
 }
