@@ -103,4 +103,11 @@ public class VentaService {
         return usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE));
     }
+
+    public Venta pagar(Long id) {
+        Venta ven = ventaRepository.findById(id)
+                .orElseThrow(() -> new ErrorVentaInexistente(id));  
+        ven.pagar();
+        return ventaRepository.save(ven);
+    }
 }

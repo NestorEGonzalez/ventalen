@@ -90,4 +90,8 @@ public class Venta {
         detalle.setVenta(null);
     }
 
+    public void pagar() {
+        this.pagado = true;
+    }
+
 }

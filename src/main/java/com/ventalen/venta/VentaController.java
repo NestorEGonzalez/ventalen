@@ -44,4 +44,10 @@ public class VentaController {
                 .path("/{id}").buildAndExpand(venta.getId()).toUri();
         return ResponseEntity.created(location).body(ventaMapper.toResponse(venta));
     }
+
+    @PostMapping(URL_BASE + "/pagar"+"/{id}")
+    public ResponseEntity<VentaResponse> pagar(@Valid @RequestBody VentaResponse response) {
+        Venta venta = ventaService.pagar(response.id());
+        return ResponseEntity.ok(ventaMapper.toResponse(venta));
+    }
 }

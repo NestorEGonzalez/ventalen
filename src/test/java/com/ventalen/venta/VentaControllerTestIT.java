@@ -17,6 +17,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.ventalen.TestBase;
 import com.ventalen.categoria.Categoria;
@@ -117,5 +119,34 @@ class VentaControllerTestIT extends TestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void test05_sePuedeCrearUnaVentaYNoPAgarla() throws Exception {
+        Cliente cliente = clienteService.crear("Activo","111111");
+        DetalleVentaRequest detalle = new DetalleVentaRequest(producto.getId(), 1, new BigDecimal("10"));
+        VentaRequest request = new VentaRequest(false, cliente.getId(), java.util.List.of(detalle));
+
+        String venta = mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new VentaRequest(false, cliente.getId(), java.util.List.of(detalle)))))
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.pagado").value(false))
+                        .andReturn().getResponse().getContentAsString();
+        Venta ven = objectMapper.readValue(venta, Venta.class);  
+        /*
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.pagado").value(false))
+                .andExpect(header().exists("Location"));
+        */
+
+        mockMvc.perform(post(URL + "/pagar/"+ven.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pagado").value(true));
     }
 }

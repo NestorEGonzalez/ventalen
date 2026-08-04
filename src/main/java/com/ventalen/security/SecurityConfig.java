@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService; //Servicio que carga usuarios desde la base de datos.
     private final JwtAuthFilter jwtAuthFilter; // filtro personalizado que valida el token JWT en cada request
-    private final static String URL = "/productos/**";
+    private final static String URL = "/ventalen/**";
     private final static String ADMIN = "ADMIN";
 
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthFilter jwtAuthFilter){
