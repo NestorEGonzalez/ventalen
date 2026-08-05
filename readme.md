@@ -1,4 +1,5 @@
-![Maven Build](https://github.com/NestorEGonzalez/ventalen/tree/main/.github/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/NestorEGonzalez/)](https://github.com/NestorEGonzalez/ventalen/actions/workflows/maven.yml)
+
 
 # 🛒 Ventalen
 
