@@ -1,134 +1,111 @@
-# 🚀 Ventalen
+# 🛒 Ventalen
 
-Sistema de gestión comercial desarrollado en **Java 21 con Spring Boot**, diseñado bajo principios de **arquitectura limpia, TDD y buenas prácticas de desarrollo backend**.
+API REST desarrollada con **Java 21** y **Spring Boot** para la gestión integral de comercios.
 
-El proyecto comenzó como una API de catálogo de productos y actualmente evoluciona hacia una plataforma de gestión integral orientada al control de stock, ventas y administración comercial.
+El proyecto permite administrar productos, categorías, clientes, proveedores, ingresos, ventas y ajustes de stock, implementando reglas de negocio para garantizar la consistencia del inventario.
 
----
+Fue desarrollado siguiendo una estrategia **Test Driven Development (TDD)** y utiliza **Spring Security**, **JWT**, **PostgreSQL**, **Docker** y **Testcontainers**.
 
-## 🎯 Objetivo
+## Características
 
-Construir una aplicación mantenible, escalable y extensible que permita gestionar:
+- Gestión de productos y categorías.
+- Administración de clientes y proveedores.
+- Registro de ingresos y ventas.
+- Ajustes automáticos de stock.
+- Ventas pendientes de pago (fiado).
+- Autenticación y autorización mediante JWT.
+- Validaciones con Bean Validation.
+- Manejo global de excepciones.
+- Arquitectura por capas.
+- Pruebas unitarias e integración.
 
-* Productos
-* Stock
-* Ingresos de mercadería
-* Ventas
-* Clientes
-* Proveedores
-* Ajustes de inventario
+## Tecnologías
 
-Todo ello respaldado por una arquitectura sólida, pruebas automatizadas y despliegue reproducible mediante contenedores.
+| Categoría | Tecnologías |
+|------------|-------------|
+| Lenguaje | Java 21 |
+| Framework | Spring Boot 4 |
+| Persistencia | Spring Data JPA · Hibernate |
+| Seguridad | Spring Security · JWT |
+| Base de datos | PostgreSQL |
+| Testing | JUnit 5 · Mockito · Testcontainers |
+| Contenedores | Docker · Docker Compose |
+| Build | Maven |
+| Mapeo | MapStruct |
 
----
+## Arquitectura y Diseño
 
-## 🚀 Tecnologías utilizadas
+El proyecto utiliza una **Arquitectura en Capas** limpia y mantenible, aplicando el patrón DTO para desacoplar las entidades de dominio de la capa de exposición API:
 
-* Java 21
-* Spring Boot 4
-* Spring Data JPA
-* Hibernate
-* PostgreSQL
-* Maven
-* Docker
-* Testcontainers
-* JUnit 5
-* Mockito
-* OpenAPI / Swagger
+`Controller ➔ DTO ➔ MapStruct ➔ Service ➔ Repository ➔ PostgreSQL`
 
----
+- **Manejo Global de Excepciones:** Centralizado mediante `@ControllerAdvice` para retornar respuestas estandarizadas.
+- **Gestión Transaccional:** Uso explícito de `@Transactional` en la capa de servicios para garantizar atomicidad y consistencia (ACID) en operaciones multietapa (ej. actualización de stock al procesar ventas).
 
-## 🏗️ Arquitectura
+## Seguridad
 
-El proyecto mantiene una separación clara de responsabilidades:
+- Autenticación Stateless basada en **Spring Security** y **JWT (JSON Web Tokens)**.
+- Control de acceso basado en roles **(admin, user)** para proteger endpoints críticos según el perfil de usuario.
 
-* **Entity** → Modelos y mapeos JPA.
-* **Repository** → Acceso a datos.
-* **Service** → Lógica de negocio.
-* **Controller** → Endpoints REST.
-* **DTO** → Transferencia de datos.
-* **Exception** → Manejo centralizado de errores.
-* **Security** → Autenticación y autorización.
+## Testing & Calidad de Código
 
-Esta estructura facilita el mantenimiento, testing y evolución de nuevas funcionalidades.
+Desarrollado bajo la metodología **Test Driven Development (TDD)**:
 
----
+- **Pruebas Unitarias:** Cobertura de la lógica de negocio en la capa de servicios aislando dependencias con **Mockito**.
+- **Pruebas de Integración:** Verificación de repositorios JPA y flujos de base de datos ejecutados sobre una instancia real de **PostgreSQL** orquestada por **Testcontainers**.
 
-## 🧪 Testing
+Ejecución de suite de pruebas:
 
-El desarrollo está orientado a la calidad mediante:
+```bash
+    ./mvnw test
+```
+               
+## Reglas de negocio
 
-* Pruebas unitarias.
-* Pruebas de integración.
-* Testcontainers con PostgreSQL.
-* MockMvc para validación de endpoints REST.
-* Desarrollo guiado por pruebas (TDD).
+- No se permiten productos duplicados.
+- No se permiten categorías duplicadas.
+- No es posible registrar ventas que generen stock negativo.
+- Los ingresos incrementan automáticamente el stock.
+- Los ajustes actualizan el stock de forma consistente.
+- Las ventas descuentan el stock disponible.
+- Las ventas pueden registrarse como pendientes de pago (fiado) y descuentan stock.
+- Las operaciones críticas se ejecutan dentro de transacciones para mantener la integridad de los datos.
 
----
+## Instalación y ejecución
 
-## 📚 Documentación
+1. **Clonar el repositorio:**
+```bash
+    git clone [https://github.com/NestorEGonzalez/ventalen.git] (https://github.com/NestorEGonzalez/ventalen.git)
+    cd ventalen
+```
+2. **Configurar variables de entorno:** (antes de levantar los contenedores, es necesario definir las variables de entorno en local):
 
-La carpeta `docs/` contiene documentación técnica relacionada con el proyecto.
+```bash
+    export DB_PASSWORD = una_contraseña_segura
+    export JWT_SECRET = un_hash_sha256
+```
+También puede crearse un archivo `.env` dentro del proyecto con ambas variables.
 
-Actualmente incluye:
+3. **Iniciar la aplicación:**
 
-* Diagrama Entidad-Relación (ER) de la base de datos.
+```bash
+    docker compose up --build
+```
+        
+## Roadmap
 
-A medida que el sistema evolucione se incorporarán:
-
-* Diagramas de arquitectura.
-* Casos de uso.
-* Decisiones de diseño.
-* Documentación funcional de módulos.
-
----
-
-## 🔐 Seguridad
-
-* Autenticación mediante JWT.
-* Autorización basada en roles.
-* Protección de endpoints sensibles.
-* Usuario administrador inicial configurable.
-
----
-
-## 📌 Estado actual
-
-### Implementado
-
-* Gestión de productos.
-* Autenticación y autorización JWT.
-* Persistencia con PostgreSQL.
-* Contenedorización con Docker.
-* Documentación OpenAPI.
-* Suite de pruebas automatizadas.
-
-### En desarrollo
-
-* Gestión de stock.
-* Registro de ingresos de mercadería.
-* Gestión de clientes.
-* Gestión de proveedores.
-* Registro de ventas.
-* Ajustes de inventario.
-* Reportes y métricas operativas.
-
----
-
-## 📈 Roadmap
-
-* [x] Catálogo de productos
-* [x] Seguridad con JWT
-* [x] Dockerización
-* [x] Testing con Testcontainers
-* [ ] Gestión de stock
-* [ ] Ingresos de mercadería
-* [ ] Clientes
-* [ ] Proveedores
-* [ ] Ventas
-* [ ] Ajustes de stock
-* [ ] Reportes
-
----
-
-⚠️ Proyecto en evolución activa. La funcionalidad actual es estable, mientras se incorporan nuevos módulos de gestión comercial.
+- [x] Gestión de productos
+- [x] Gestión de categorías
+- [x] Gestión de clientes
+- [x] Gestión de proveedores
+- [x] Gestión de ingresos
+- [x] Gestión de ventas
+- [x] Gestión de stock
+- [x] Seguridad con JWT
+- [x] Docker
+- [x] Tests unitarios
+- [x] Tests de integración
+- [ ] Reportes
+- [ ] OpenAPI / Swagger
+- [ ] JaCoCo
+- [ ] GitHub Actions
