@@ -1,3 +1,5 @@
+![Maven Build](https://github.com/NestorEGonzalez/ventalen/tree/main/.github/workflows/maven.yml/badge.svg)
+
 # 🛒 Ventalen
 
 API REST desarrollada con **Java 21** y **Spring Boot** para la gestión integral de comercios.
