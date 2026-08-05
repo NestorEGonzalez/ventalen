@@ -1,4 +1,4 @@
-![Maven Build](https://github.com/NestorEGonzalez/ventalen/tree/main/.github/workflows/maven.yml/badge.svg)
+![Maven Build](https://github.com/NestorEGonzalez/ventalen/tree/main/.github/workflows/maven.yml)
 
 # 🛒 Ventalen
 
