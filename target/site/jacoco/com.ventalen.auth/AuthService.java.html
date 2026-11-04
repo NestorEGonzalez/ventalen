@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.auth</a> &gt; <span class="el_source">AuthService.java</span></div><h1>AuthService.java</h1><pre class="source lang-java linenums">package com.ventalen.auth;
+
+import java.util.regex.Pattern;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ventalen.exception.ErrorUsuarioNoValido;
+import com.ventalen.security.JwtUtil;
+
+@Service
+@Transactional(readOnly = true)
+public class AuthService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+
+<span class="nc" id="L24">    public AuthService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager){</span>
+<span class="nc" id="L25">        this.usuarioRepository = usuarioRepository;</span>
+<span class="nc" id="L26">        this.passwordEncoder = passwordEncoder;</span>
+<span class="nc" id="L27">        this.jwtUtil = jwtUtil;</span>
+<span class="nc" id="L28">        this.authenticationManager = authenticationManager;</span>
+<span class="nc" id="L29">    }</span>
+
+    public AuthResponse login(LoginRequest loginRequest) {
+<span class="nc" id="L32">        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));</span>
+
+<span class="nc" id="L34">        Usuario usuario = usuarioRepository</span>
+<span class="nc" id="L35">                            .findByUsername(loginRequest.username())</span>
+<span class="nc" id="L36">                            .orElseThrow(()-&gt;{</span>
+<span class="nc" id="L37">                                throw new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE);</span>
+                            });
+        
+<span class="nc" id="L40">        String token = jwtUtil.generarToken(usuario.getUsername(), usuario.getRol().name());</span>
+
+<span class="nc" id="L42">        return new AuthResponse(token, usuario.getUsername(), usuario.getRol().name());</span>
+    }
+
+    @Transactional
+    public AuthResponse register(RegisterRequest registerRequest) {
+<span class="nc" id="L47">        validarPasswordSegura(registerRequest.password());</span>
+<span class="nc" id="L48">        verificarUsuarioExistente(registerRequest.username());</span>
+<span class="nc" id="L49">        Usuario nuevoUsuario = new Usuario(registerRequest.username(), passwordEncoder.encode(registerRequest.password()), registerRequest.rol());</span>
+
+<span class="nc" id="L51">        usuarioRepository.save(nuevoUsuario);</span>
+
+<span class="nc" id="L53">        String token = jwtUtil.generarToken(nuevoUsuario.getUsername(), nuevoUsuario.getRol().name());</span>
+
+<span class="nc" id="L55">        return new AuthResponse(token, nuevoUsuario.getUsername(), nuevoUsuario.getRol().name());</span>
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+<span class="nc" id="L60">        String username = SecurityContextHolder.getContext().getAuthentication().getName();</span>
+
+<span class="nc" id="L62">        Usuario usuario = usuarioRepository.findByUsername(username)</span>
+<span class="nc" id="L63">                .orElseThrow(() -&gt; new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE));</span>
+
+<span class="nc" id="L65">        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.currentPassword()));</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (!request.newPassword().equals(request.confirmPassword())) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;La nueva contraseña y la confirmación deben coincidir.&quot;);</span>
+        }
+
+<span class="nc" id="L71">        validarPasswordSegura(request.newPassword());</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (passwordEncoder.matches(request.newPassword(), usuario.getPassword())) {</span>
+<span class="nc" id="L74">            throw new IllegalArgumentException(&quot;La nueva contraseña debe ser distinta a la actual.&quot;);</span>
+        }
+
+<span class="nc" id="L77">        usuario.setPassword(passwordEncoder.encode(request.newPassword()));</span>
+<span class="nc" id="L78">        usuarioRepository.save(usuario);</span>
+<span class="nc" id="L79">    }</span>
+
+    private void validarPasswordSegura(String password) {
+<span class="nc bnc" id="L82" title="All 4 branches missed.">        if (password == null || password.isBlank()) {</span>
+<span class="nc" id="L83">            throw new IllegalArgumentException(&quot;La contraseña no puede estar vacía.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (password.length() &lt; 8) {</span>
+<span class="nc" id="L87">            throw new IllegalArgumentException(&quot;La contraseña debe tener al menos 8 caracteres.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (!Pattern.compile(&quot;[A-Z]&quot;).matcher(password).find()) {</span>
+<span class="nc" id="L91">            throw new IllegalArgumentException(&quot;La contraseña debe incluir al menos una letra mayúscula.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (!Pattern.compile(&quot;[a-z]&quot;).matcher(password).find()) {</span>
+<span class="nc" id="L95">            throw new IllegalArgumentException(&quot;La contraseña debe incluir al menos una letra minúscula.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (!Pattern.compile(&quot;\\d&quot;).matcher(password).find()) {</span>
+<span class="nc" id="L99">            throw new IllegalArgumentException(&quot;La contraseña debe incluir al menos un número.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (!Pattern.compile(&quot;[^A-Za-z0-9]&quot;).matcher(password).find()) {</span>
+<span class="nc" id="L103">            throw new IllegalArgumentException(&quot;La contraseña debe incluir al menos un carácter especial.&quot;);</span>
+        }
+<span class="nc" id="L105">    }</span>
+
+    private void verificarUsuarioExistente(String username){
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (usuarioRepository.existsByUsername(username.trim().toLowerCase())) {</span>
+<span class="nc" id="L109">            throw new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_REGISTRADO);</span>
+        }
+<span class="nc" id="L111">    }</span>
+
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

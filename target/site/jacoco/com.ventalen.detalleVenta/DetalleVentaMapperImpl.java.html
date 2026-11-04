@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetalleVentaMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.detalleVenta</a> &gt; <span class="el_source">DetalleVentaMapperImpl.java</span></div><h1>DetalleVentaMapperImpl.java</h1><pre class="source lang-java linenums">package com.ventalen.detalleVenta;
+
+import com.ventalen.producto.Producto;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-08-25T10:30:28-0300&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.12.1 (Debian)&quot;
+)
+@Component
+<span class="nc" id="L16">public class DetalleVentaMapperImpl implements DetalleVentaMapper {</span>
+
+    @Override
+    public DetalleVentaResponse toResponse(DetalleVenta detalle) {
+<span class="nc bnc" id="L20" title="All 2 branches missed.">        if ( detalle == null ) {</span>
+<span class="nc" id="L21">            return null;</span>
+        }
+
+<span class="nc" id="L24">        Long productoId = null;</span>
+<span class="nc" id="L25">        String productoNombre = null;</span>
+<span class="nc" id="L26">        Long id = null;</span>
+<span class="nc" id="L27">        Integer cantidad = null;</span>
+<span class="nc" id="L28">        BigDecimal precioVenta = null;</span>
+
+<span class="nc" id="L30">        productoId = detalleProductoId( detalle );</span>
+<span class="nc" id="L31">        productoNombre = detalleProductoNombre( detalle );</span>
+<span class="nc" id="L32">        id = detalle.getId();</span>
+<span class="nc" id="L33">        cantidad = detalle.getCantidad();</span>
+<span class="nc" id="L34">        precioVenta = detalle.getPrecioVenta();</span>
+
+<span class="nc" id="L36">        DetalleVentaResponse detalleVentaResponse = new DetalleVentaResponse( id, productoId, productoNombre, cantidad, precioVenta );</span>
+
+<span class="nc" id="L38">        return detalleVentaResponse;</span>
+    }
+
+    @Override
+    public List&lt;DetalleVentaResponse&gt; toResponseList(List&lt;DetalleVenta&gt; detalles) {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if ( detalles == null ) {</span>
+<span class="nc" id="L44">            return null;</span>
+        }
+
+<span class="nc" id="L47">        List&lt;DetalleVentaResponse&gt; list = new ArrayList&lt;DetalleVentaResponse&gt;( detalles.size() );</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        for ( DetalleVenta detalleVenta : detalles ) {</span>
+<span class="nc" id="L49">            list.add( toResponse( detalleVenta ) );</span>
+<span class="nc" id="L50">        }</span>
+
+<span class="nc" id="L52">        return list;</span>
+    }
+
+    private Long detalleProductoId(DetalleVenta detalleVenta) {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if ( detalleVenta == null ) {</span>
+<span class="nc" id="L57">            return null;</span>
+        }
+<span class="nc" id="L59">        Producto producto = detalleVenta.getProducto();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if ( producto == null ) {</span>
+<span class="nc" id="L61">            return null;</span>
+        }
+<span class="nc" id="L63">        Long id = producto.getId();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if ( id == null ) {</span>
+<span class="nc" id="L65">            return null;</span>
+        }
+<span class="nc" id="L67">        return id;</span>
+    }
+
+    private String detalleProductoNombre(DetalleVenta detalleVenta) {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if ( detalleVenta == null ) {</span>
+<span class="nc" id="L72">            return null;</span>
+        }
+<span class="nc" id="L74">        Producto producto = detalleVenta.getProducto();</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if ( producto == null ) {</span>
+<span class="nc" id="L76">            return null;</span>
+        }
+<span class="nc" id="L78">        String nombre = producto.getNombre();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if ( nombre == null ) {</span>
+<span class="nc" id="L80">            return null;</span>
+        }
+<span class="nc" id="L82">        return nombre;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

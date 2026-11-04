@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MotivoMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.motivo</a> &gt; <span class="el_source">MotivoMapperImpl.java</span></div><h1>MotivoMapperImpl.java</h1><pre class="source lang-java linenums">package com.ventalen.motivo;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-08-25T10:30:27-0300&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.12.1 (Debian)&quot;
+)
+@Component
+<span class="nc" id="L14">public class MotivoMapperImpl implements MotivoMapper {</span>
+
+    @Override
+    public MotivoResponse toResponse(Motivo motivo) {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if ( motivo == null ) {</span>
+<span class="nc" id="L19">            return null;</span>
+        }
+
+<span class="nc" id="L22">        Long id = null;</span>
+<span class="nc" id="L23">        String motivo1 = null;</span>
+<span class="nc" id="L24">        Boolean afectaPositivo = null;</span>
+
+<span class="nc" id="L26">        id = motivo.getId();</span>
+<span class="nc" id="L27">        motivo1 = motivo.getMotivo();</span>
+<span class="nc" id="L28">        afectaPositivo = motivo.getAfectaPositivo();</span>
+
+<span class="nc" id="L30">        MotivoResponse motivoResponse = new MotivoResponse( id, motivo1, afectaPositivo );</span>
+
+<span class="nc" id="L32">        return motivoResponse;</span>
+    }
+
+    @Override
+    public List&lt;MotivoResponse&gt; toResponseList(List&lt;Motivo&gt; motivos) {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if ( motivos == null ) {</span>
+<span class="nc" id="L38">            return null;</span>
+        }
+
+<span class="nc" id="L41">        List&lt;MotivoResponse&gt; list = new ArrayList&lt;MotivoResponse&gt;( motivos.size() );</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        for ( Motivo motivo : motivos ) {</span>
+<span class="nc" id="L43">            list.add( toResponse( motivo ) );</span>
+<span class="nc" id="L44">        }</span>
+
+<span class="nc" id="L46">        return list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

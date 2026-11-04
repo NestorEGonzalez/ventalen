@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Categoria.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.categoria</a> &gt; <span class="el_source">Categoria.java</span></div><h1>Categoria.java</h1><pre class="source lang-java linenums">package com.ventalen.categoria;
+
+import com.ventalen.exception.ErrorCampoVacioONulo;
+import com.ventalen.funciones.ValidarString;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+
+@Entity
+@Table(name = &quot;categoria&quot;)
+public class Categoria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = ErrorCampoVacioONulo.ERROR_CAMPO_VACIO_NULO)
+    @Column(unique = true, nullable = false)
+    private String categoria;
+
+    
+<span class="nc" id="L27">    public Categoria(){}</span>
+
+<span class="fc" id="L29">    public Categoria(String nombre){</span>
+<span class="fc" id="L30">        this.categoria = ValidarString.validarString(nombre);</span>
+
+<span class="fc" id="L32">    }</span>
+
+    public void setCategoria(String nuevoNombre){
+<span class="fc" id="L35">        this.categoria = ValidarString.validarString(nuevoNombre);</span>
+
+<span class="fc" id="L37">    }</span>
+
+    public String getCategoria(){
+<span class="fc" id="L40">        return this.categoria;</span>
+    }
+
+    public Long getId(){
+<span class="nc" id="L44">        return this.id;</span>
+    }
+
+    
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

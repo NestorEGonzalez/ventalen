@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Producto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.producto</a> &gt; <span class="el_source">Producto.java</span></div><h1>Producto.java</h1><pre class="source lang-java linenums">package com.ventalen.producto;
+
+import java.math.BigDecimal;
+
+import com.ventalen.funciones.ValidarString;
+import com.ventalen.funciones.ValidarPrecio;
+import com.ventalen.categoria.Categoria;
+import com.ventalen.exception.ErrorCampoVacioONulo;
+import com.ventalen.exception.ErrorPrecioInvalido;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+
+@Entity
+
+@Table(name=&quot;producto&quot;)
+
+public class Producto {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = ErrorCampoVacioONulo.ERROR_CAMPO_VACIO_NULO)
+    @Column(unique = true, nullable = false)
+    private String nombre;
+
+    @PositiveOrZero(message = ErrorPrecioInvalido.ERROR_PRECIO_NEGATIVO)
+    private BigDecimal precio;
+    
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_categoria&quot;, nullable = false)
+    private Categoria categoria;
+
+<span class="pc" id="L44">    @Column(nullable = false)</span>
+    private boolean activo = true;
+
+<span class="fc" id="L47">    public Producto(){}</span>
+
+<span class="nc" id="L49">    public Producto(String nombre, BigDecimal precio, Categoria categoria){</span>
+<span class="nc" id="L50">        this.nombre = ValidarString.validarString(nombre);</span>
+<span class="nc" id="L51">        this.precio = ValidarPrecio.validarPrecio(precio);</span>
+<span class="nc" id="L52">        this.categoria = categoria;</span>
+<span class="nc" id="L53">    }</span>
+
+    public String getNombre(){
+<span class="nc" id="L56">        return this.nombre;</span>
+    }
+
+    public BigDecimal getPrecio(){
+<span class="nc" id="L60">        return this.precio;</span>
+    }
+
+    public Categoria getCategoria(){
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        return this.categoria != null ? this.categoria: null;</span>
+    }
+
+
+    public void setNombre(String nombre){
+<span class="nc" id="L69">        this.nombre = ValidarString.validarString(nombre);</span>
+
+<span class="nc" id="L71">    }</span>
+
+    public void setPrecio(BigDecimal precio){
+<span class="nc" id="L74">        this.precio = ValidarPrecio.validarPrecio(precio);</span>
+<span class="nc" id="L75">    }</span>
+
+
+    public void setCategoria(Categoria categoria){
+<span class="nc" id="L79">        this.categoria = categoria;</span>
+<span class="nc" id="L80">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L83">        return this.id;</span>
+    }
+
+    public void activarProducto(){
+<span class="nc" id="L87">        this.activo = true;</span>
+<span class="nc" id="L88">    }</span>
+
+    public void desactivarProducto(){
+<span class="fc" id="L91">        this.activo = false;</span>
+<span class="fc" id="L92">    }</span>
+
+    public boolean isActivo(){
+<span class="fc" id="L95">        return this.activo;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

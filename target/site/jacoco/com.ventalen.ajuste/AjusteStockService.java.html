@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AjusteStockService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.ajuste</a> &gt; <span class="el_source">AjusteStockService.java</span></div><h1>AjusteStockService.java</h1><pre class="source lang-java linenums">package com.ventalen.ajuste;
+
+import java.util.List;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ventalen.auth.Usuario;
+import com.ventalen.auth.UsuarioRepository;
+import com.ventalen.exception.ErrorAjusteStockInexistente;
+import com.ventalen.exception.ErrorMotivoInexistente;
+import com.ventalen.exception.ErrorProductoInactivo;
+import com.ventalen.exception.ErrorStockInsuficiente;
+import com.ventalen.exception.ErrorUsuarioNoValido;
+import com.ventalen.motivo.Motivo;
+import com.ventalen.motivo.MotivoRepository;
+import com.ventalen.producto.Producto;
+import com.ventalen.producto.ProductoService;
+import com.ventalen.stock.Stock;
+import com.ventalen.stock.StockRepository;
+
+@Service
+@Transactional(readOnly = true)
+public class AjusteStockService {
+
+    private final AjusteStockRepository ajusteStockRepository;
+    private final ProductoService productoService;
+    private final MotivoRepository motivoRepository;
+    private final StockRepository stockRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public AjusteStockService(AjusteStockRepository ajusteStockRepository,
+                              ProductoService productoService,
+                              MotivoRepository motivoRepository,
+                              StockRepository stockRepository,
+<span class="fc" id="L37">                              UsuarioRepository usuarioRepository) {</span>
+<span class="fc" id="L38">        this.ajusteStockRepository = ajusteStockRepository;</span>
+<span class="fc" id="L39">        this.productoService = productoService;</span>
+<span class="fc" id="L40">        this.motivoRepository = motivoRepository;</span>
+<span class="fc" id="L41">        this.stockRepository = stockRepository;</span>
+<span class="fc" id="L42">        this.usuarioRepository = usuarioRepository;</span>
+<span class="fc" id="L43">    }</span>
+
+    public List&lt;AjusteStock&gt; obtenerTodos() {
+<span class="nc" id="L46">        return ajusteStockRepository.findAll();</span>
+    }
+
+    public AjusteStock buscarPorId(Long id) {
+<span class="nc" id="L50">        return ajusteStockRepository.findById(id)</span>
+<span class="nc" id="L51">                                        .orElseThrow(() -&gt; new ErrorAjusteStockInexistente(id));</span>
+    }
+
+    @Transactional
+    public AjusteStock crear(Long productoId, Integer cantidad, Long motivoId, String detalles) {
+<span class="fc" id="L56">        Usuario usuario = obtenerUsuarioAutenticado();</span>
+<span class="fc" id="L57">        Producto producto = productoService.buscarProductoConId(productoId);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (!producto.isActivo()) {</span>
+<span class="fc" id="L59">            throw new ErrorProductoInactivo(producto.getId());</span>
+        }
+<span class="fc" id="L61">        Motivo motivo = motivoRepository.findById(motivoId)</span>
+<span class="fc" id="L62">                                        .orElseThrow(() -&gt; </span>
+<span class="fc" id="L63">                                        new ErrorMotivoInexistente(motivoId));</span>
+<span class="fc" id="L64">        Stock stock = stockRepository.findByProducto(producto)</span>
+<span class="fc" id="L65">                                   .orElseGet(() -&gt; stockRepository.save(new Stock(producto, 0)));</span>
+
+<span class="fc bfc" id="L67" title="All 4 branches covered.">        if (!motivo.getAfectaPositivo() &amp;&amp; stock.getCantidad() &lt; cantidad) {</span>
+<span class="fc" id="L68">            throw new ErrorStockInsuficiente(producto.getId(), stock.getCantidad(), cantidad);</span>
+        }
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        int ajuste = motivo.getAfectaPositivo() ? cantidad : -cantidad;</span>
+<span class="fc" id="L72">        stock.setCantidad(stock.getCantidad() + ajuste);</span>
+<span class="fc" id="L73">        stockRepository.save(stock);</span>
+
+<span class="fc" id="L75">        AjusteStock ajusteStock = new AjusteStock();</span>
+<span class="fc" id="L76">        ajusteStock.setProducto(producto);</span>
+<span class="fc" id="L77">        ajusteStock.setCantidad(cantidad);</span>
+<span class="fc" id="L78">        ajusteStock.setMotivo(motivo);</span>
+<span class="fc" id="L79">        ajusteStock.setUsuario(usuario);</span>
+<span class="fc" id="L80">        ajusteStock.setDetalles(detalles);</span>
+<span class="fc" id="L81">        ajusteStock.setStock(stock);</span>
+
+<span class="fc" id="L83">        return ajusteStockRepository.save(ajusteStock);</span>
+    }
+
+    private Usuario obtenerUsuarioAutenticado() {
+<span class="fc" id="L87">        String username = SecurityContextHolder.getContext().getAuthentication().getName();</span>
+<span class="fc" id="L88">        return usuarioRepository.findByUsername(username)</span>
+<span class="fc" id="L89">                                    .orElseThrow(() -&gt; </span>
+<span class="nc" id="L90">                                        new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

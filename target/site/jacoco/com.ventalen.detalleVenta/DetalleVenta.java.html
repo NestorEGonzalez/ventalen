@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetalleVenta.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.detalleVenta</a> &gt; <span class="el_source">DetalleVenta.java</span></div><h1>DetalleVenta.java</h1><pre class="source lang-java linenums">package com.ventalen.detalleVenta;
+
+import java.math.BigDecimal;
+
+import com.ventalen.producto.Producto;
+import com.ventalen.stock.Stock;
+import com.ventalen.venta.Venta;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = &quot;detalle_venta&quot;)
+public class DetalleVenta {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_venta&quot;, nullable = false)
+    private Venta venta;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_producto&quot;, nullable = false)
+    private Producto producto;
+
+    @Column(nullable = false)
+    private Integer cantidad;
+
+    @Column(nullable = false)
+    private BigDecimal precioVenta;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_stock&quot;)
+    private Stock stock;
+
+<span class="fc" id="L45">    public DetalleVenta(){}</span>
+
+    public Long getId(){
+<span class="nc" id="L48">        return this.id;</span>
+    }
+
+    public Venta getVenta(){
+<span class="nc" id="L52">        return this.venta;</span>
+    }
+
+    public void setVenta(Venta venta){
+<span class="fc" id="L56">        this.venta = venta;</span>
+<span class="fc" id="L57">    }</span>
+
+    public Producto getProducto(){
+<span class="nc" id="L60">        return this.producto;</span>
+    }
+
+    public void setProducto(Producto producto){
+<span class="fc" id="L64">        this.producto = producto;</span>
+<span class="fc" id="L65">    }</span>
+
+    public Integer getCantidad(){
+<span class="nc" id="L68">        return this.cantidad;</span>
+    }
+
+    public void setCantidad(Integer cantidad){
+<span class="fc" id="L72">        this.cantidad = cantidad;</span>
+<span class="fc" id="L73">    }</span>
+
+    public BigDecimal getPrecioVenta(){
+<span class="nc" id="L76">        return this.precioVenta;</span>
+    }
+
+    public void setPrecioVenta(BigDecimal precioVenta){
+<span class="fc" id="L80">        this.precioVenta = precioVenta;</span>
+<span class="fc" id="L81">    }</span>
+
+    public Stock getStock(){
+<span class="nc" id="L84">        return this.stock;</span>
+    }
+
+    public void setStock(Stock stock){
+<span class="fc" id="L88">        this.stock = stock;</span>
+<span class="fc" id="L89">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.producto</a> &gt; <span class="el_source">ProductoService.java</span></div><h1>ProductoService.java</h1><pre class="source lang-java linenums">package com.ventalen.producto;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ventalen.categoria.Categoria;
+import com.ventalen.categoria.CategoriaRepository;
+//import com.ventalen.exception.ErrorCampoVacioONulo;
+import com.ventalen.exception.ErrorCategoriaInexistente;
+import com.ventalen.exception.ErrorNombreProductoExistente;
+import com.ventalen.exception.ErrorProductoConIdInexistente;
+import com.ventalen.funciones.ValidarPrecio;
+import com.ventalen.funciones.ValidarString;
+
+
+@Service
+@Transactional(readOnly = true)
+
+public class ProductoService {
+
+    private ProductoRepository productoRepository;
+
+    private CategoriaRepository categoriaRepository;
+
+<span class="nc" id="L28">    public ProductoService(ProductoRepository productoRepository, CategoriaRepository categoriaRepository){</span>
+<span class="nc" id="L29">        this.productoRepository = productoRepository;</span>
+<span class="nc" id="L30">        this.categoriaRepository = categoriaRepository;</span>
+<span class="nc" id="L31">    }</span>
+
+    @Transactional
+    public Producto crearProducto(String nombreProd, BigDecimal precio, Long idCat) {
+<span class="nc" id="L35">        String nombre = ValidarString.validarString(nombreProd);</span>
+<span class="nc" id="L36">        BigDecimal precioValidado = ValidarPrecio.validarPrecio(precio);</span>
+        //verificarNombre(nombreProd);
+<span class="nc" id="L38">        verificarNombreExistente(nombre);</span>
+<span class="nc" id="L39">        Categoria cat = obtenerCategoriaPorId(idCat);</span>
+        
+<span class="nc" id="L41">        return productoRepository.save(new Producto(nombre,precioValidado,cat));</span>
+        
+    }
+
+    private Categoria obtenerCategoriaPorId(Long idCat) {
+<span class="nc" id="L46">        Categoria cat = categoriaRepository</span>
+<span class="nc" id="L47">                        .findById(idCat)</span>
+<span class="nc" id="L48">                        .orElseThrow(()-&gt;{</span>
+<span class="nc" id="L49">                            throw new ErrorCategoriaInexistente(idCat);</span>
+                        });
+<span class="nc" id="L51">        return cat;</span>
+    }
+
+    /*private void verificarNombre(String nombreProd) {
+        if (nombreProd == null) {
+            throw new ErrorCampoVacioONulo(ErrorCampoVacioONulo.ERROR_CAMPO_VACIO_NULO);
+        }
+        
+    }*/
+
+    private void verificarNombreExistente(String nombreProd){
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (productoRepository.existsByNombre(nombreProd.trim().toLowerCase())) {</span>
+<span class="nc" id="L63">            throw new ErrorNombreProductoExistente(nombreProd.trim().toLowerCase());</span>
+        }
+<span class="nc" id="L65">    }</span>
+
+    @Transactional
+    public void borrarProductoConId(Long idProd) {
+        //verificarProducto(idProd);
+<span class="nc" id="L70">        Producto producto = obtenerProductoConId(idProd);</span>
+<span class="nc" id="L71">        producto.desactivarProducto();</span>
+<span class="nc" id="L72">        productoRepository.save(producto);</span>
+
+        //productoRepository.deleteByI d(idProd);
+<span class="nc" id="L75">    }</span>
+
+    /* private void verificarProducto(Long idProd) {
+        if (!productoRepository.existsById(idProd)) {
+            throw new ErrorProductoConIdInexistente(idProd);
+        }
+    } */
+
+    @Transactional
+    public void cambiarNombreDeProducto(Long idProd, String nombreNuevo) {
+<span class="nc" id="L85">        Producto producto = obtenerProductoConId(idProd);</span>
+        //verificarNombre(nombreNuevo);
+<span class="nc" id="L87">        String nuevoNombre =ValidarString.validarString(nombreNuevo);</span>
+<span class="nc" id="L88">        verificarNombreExistente(nuevoNombre);</span>
+<span class="nc" id="L89">        producto.setNombre(nuevoNombre);</span>
+<span class="nc" id="L90">        productoRepository.save(producto);</span>
+<span class="nc" id="L91">    }</span>
+
+    private Producto obtenerProductoConId(Long idProd) {
+<span class="nc" id="L94">        Producto producto = productoRepository</span>
+<span class="nc" id="L95">                            .findById(idProd)</span>
+<span class="nc" id="L96">                            .orElseThrow(()-&gt;{</span>
+<span class="nc" id="L97">                                throw new ErrorProductoConIdInexistente(idProd);</span>
+                            });
+<span class="nc" id="L99">        return producto;                    </span>
+    }
+
+    @Transactional
+    public void cambiarCategoriaDeProducto(Long idProd, Long idCat) {
+<span class="nc" id="L104">        Producto producto = obtenerProductoConId(idProd);</span>
+<span class="nc" id="L105">        Categoria cat = obtenerCategoriaPorId(idCat);</span>
+<span class="nc" id="L106">        producto.setCategoria(cat);</span>
+<span class="nc" id="L107">        productoRepository.save(producto);</span>
+<span class="nc" id="L108">    }</span>
+
+    @Transactional
+    public void cambiarPrecioDeProducto(Long idProd, BigDecimal precioNuevo) {
+<span class="nc" id="L112">        Producto producto = obtenerProductoConId(idProd);</span>
+<span class="nc" id="L113">        producto.setPrecio(precioNuevo);</span>
+<span class="nc" id="L114">    }</span>
+
+    public List&lt;Producto&gt;obtenerTodosLosProductos() {
+<span class="nc" id="L117">        return productoRepository.findAll();</span>
+    }
+
+    public Producto buscarProductoConId(Long id) {
+<span class="nc" id="L121">        return productoRepository.findById(id)</span>
+<span class="nc" id="L122">                                    .orElseThrow(()-&gt;{</span>
+<span class="nc" id="L123">                                        throw new ErrorProductoConIdInexistente(id);});</span>
+    }
+
+    public List&lt;Producto&gt; obtenerProductosDeCategoria(Long id) {
+<span class="nc" id="L127">        Categoria cat = obtenerCategoriaPorId(id);</span>
+<span class="nc" id="L128">        return productoRepository.findAllByCategoria(cat);</span>
+    }
+
+    @Transactional
+    public void actualizarCategoriaDeProductos(Long idCatVieja, Long idCatNueva) {
+<span class="nc" id="L133">        Categoria catVieja = obtenerCategoriaPorId(idCatVieja);</span>
+<span class="nc" id="L134">        Categoria catNueva = obtenerCategoriaPorId(idCatNueva);</span>
+<span class="nc" id="L135">        productoRepository.actualizarCategoria(catNueva, catVieja);</span>
+        
+<span class="nc" id="L137">    }</span>
+
+    public List&lt;Producto&gt; obtenerProductosConNombre(String nombre) {
+<span class="nc" id="L140">        return productoRepository.findByNombreContainingIgnoreCase(nombre);</span>
+
+    }
+
+    @Transactional
+    public Producto modificarDatosDeProducto(Long id, String nombre, BigDecimal precio, Long idCat) {
+<span class="nc" id="L146">        Producto prod = obtenerProductoConId(id);</span>
+<span class="nc" id="L147">        String nombreValidado = ValidarString.validarString(nombre);</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (!prod.getNombre().equals(nombreValidado)) {</span>
+<span class="nc" id="L149">            cambiarNombreDeProducto(id, nombreValidado);</span>
+        }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (!prod.getCategoria().getId().equals(idCat)) {</span>
+<span class="nc" id="L152">            cambiarCategoriaDeProducto(id, idCat);</span>
+        }
+<span class="nc" id="L154">        cambiarPrecioDeProducto(id, precio);</span>
+<span class="nc" id="L155">        return productoRepository.save(prod);</span>
+
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

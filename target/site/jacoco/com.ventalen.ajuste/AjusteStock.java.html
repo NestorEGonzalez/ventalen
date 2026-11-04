@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AjusteStock.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.ajuste</a> &gt; <span class="el_source">AjusteStock.java</span></div><h1>AjusteStock.java</h1><pre class="source lang-java linenums">package com.ventalen.ajuste;
+
+import java.time.LocalDate;
+
+import com.ventalen.motivo.Motivo;
+import com.ventalen.producto.Producto;
+import com.ventalen.stock.Stock;
+import com.ventalen.auth.Usuario;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.PositiveOrZero;
+
+@Entity
+@Table(name = &quot;ajuste_stock&quot;)
+public class AjusteStock {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+<span class="fc" id="L29">    @Column(nullable = false)</span>
+<span class="fc" id="L30">    private LocalDate fecha = LocalDate.now();</span>
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_producto&quot;, nullable = false)
+    private Producto producto;
+
+    @PositiveOrZero
+    @Column(nullable = false)
+    private Integer cantidad;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_motivo&quot;, nullable = false)
+    private Motivo motivo;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_usuario&quot;, nullable = false)
+    private Usuario usuario;
+
+    private String detalles;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_stock&quot;)
+    private Stock stock;
+
+<span class="fc" id="L54">    public AjusteStock(){}</span>
+
+    public Long getId(){
+<span class="fc" id="L57">        return this.id;</span>
+    }
+
+    public LocalDate getFecha(){
+<span class="nc" id="L61">        return this.fecha;</span>
+    }
+
+    public Producto getProducto(){
+<span class="nc" id="L65">        return this.producto;</span>
+    }
+
+    public Integer getCantidad(){
+<span class="nc" id="L69">        return this.cantidad;</span>
+    }
+
+    public Motivo getMotivo(){
+<span class="fc" id="L73">        return this.motivo;</span>
+    }
+
+    public Usuario getUsuario(){
+<span class="nc" id="L77">        return this.usuario;</span>
+    }
+
+    public String getDetalles(){
+<span class="nc" id="L81">        return this.detalles;</span>
+    }
+
+    public Stock getStock(){
+<span class="fc" id="L85">        return this.stock;</span>
+    }
+
+    public void setProducto(Producto producto){
+<span class="fc" id="L89">        this.producto = producto;</span>
+<span class="fc" id="L90">    }</span>
+
+    public void setCantidad(Integer cantidad){
+<span class="fc" id="L93">        this.cantidad = cantidad;</span>
+<span class="fc" id="L94">    }</span>
+
+    public void setMotivo(Motivo motivo){
+<span class="fc" id="L97">        this.motivo = motivo;</span>
+<span class="fc" id="L98">    }</span>
+
+    public void setUsuario(Usuario usuario){
+<span class="fc" id="L101">        this.usuario = usuario;</span>
+<span class="fc" id="L102">    }</span>
+
+    public void setDetalles(String detalles){
+<span class="fc" id="L105">        this.detalles = detalles;</span>
+<span class="fc" id="L106">    }</span>
+
+    public void setStock(Stock stock){
+<span class="fc" id="L109">        this.stock = stock;</span>
+<span class="fc" id="L110">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

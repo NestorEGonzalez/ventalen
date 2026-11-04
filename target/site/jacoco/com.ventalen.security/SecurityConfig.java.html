@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.security</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package com.ventalen.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+//Indica a Spring que esta clase define la configuracion de seguridad
+@Configuration 
+@EnableWebSecurity //Activa el modulo de SpringSecurity
+
+public class SecurityConfig {
+    private final UserDetailsServiceImpl userDetailsService; //Servicio que carga usuarios desde la base de datos.
+    private final JwtAuthFilter jwtAuthFilter; // filtro personalizado que valida el token JWT en cada request
+    private final static String URL = &quot;/ventalen/**&quot;;
+    private final static String ADMIN = &quot;ADMIN&quot;;
+
+<span class="nc" id="L28">    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthFilter jwtAuthFilter){</span>
+<span class="nc" id="L29">        this.userDetailsService = userDetailsService;</span>
+<span class="nc" id="L30">        this.jwtAuthFilter = jwtAuthFilter;</span>
+<span class="nc" id="L31">    }</span>
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+<span class="nc" id="L35">        System.out.println(&quot;&gt;&gt; SEGURIDAD CARGADA&quot;);</span>
+<span class="nc" id="L36">        httpSecurity</span>
+<span class="nc" id="L37">                    .csrf(csrf -&gt; csrf.disable()) // desactiva CSRF, es deir esta API no utiliza sesiones de navegador (con cookis por ej)</span>
+<span class="nc" id="L38">                    .sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //indica que no se guarda estado en el server, todo se maneja con JWT token.</span>
+<span class="nc" id="L39">                .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="nc" id="L40">                    .requestMatchers(HttpMethod.POST, &quot;/auth/login&quot;).permitAll()</span>
+<span class="nc" id="L41">                    .requestMatchers(HttpMethod.POST, &quot;/auth/register&quot;).hasRole(ADMIN)</span>
+<span class="nc" id="L42">                    .requestMatchers(HttpMethod.POST, &quot;/auth/change-password&quot;).authenticated()</span>
+<span class="nc" id="L43">                    .requestMatchers(HttpMethod.GET, URL).permitAll()</span>
+<span class="nc" id="L44">                    .requestMatchers(HttpMethod.POST, URL).hasRole(ADMIN)</span>
+<span class="nc" id="L45">                    .requestMatchers(HttpMethod.PATCH, URL).hasRole(ADMIN)</span>
+<span class="nc" id="L46">                    .requestMatchers(HttpMethod.DELETE, URL).hasRole(ADMIN)</span>
+<span class="nc" id="L47">                    .anyRequest().authenticated() //cualquier otro endpoint, requiere autenticacion. </span>
+                )
+<span class="nc" id="L49">                .authenticationProvider(authenticationProvider()) //registra el proveedor de autenticacion (que esta definido abajo)</span>
+<span class="nc" id="L50">                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); //Activa primero este filtro, para validar primero las peticiones mediante jwt.</span>
+<span class="nc" id="L51">        return httpSecurity.build();</span>
+    }
+    
+    //Beans auxiliares
+    
+    //Bean para encriptar contraseñas (el estandar)
+    @Bean 
+    public PasswordEncoder passwordEncoder(){ 
+<span class="nc" id="L59">        return new BCryptPasswordEncoder();</span>
+    }
+    
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+<span class="nc" id="L64">        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService); //Se encargar de autenticar usuarios contra el userDetailsServiceImpl</span>
+<span class="nc" id="L65">        provider.setPasswordEncoder(passwordEncoder()); //Indica que use BCrypt para comparar contraseñas.</span>
+<span class="nc" id="L66">        return provider;</span>
+    }
+
+    //Exponer el AuthenticationManager que coordina todo el proceso de autenticacion
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+<span class="nc" id="L72">        return config.getAuthenticationManager();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

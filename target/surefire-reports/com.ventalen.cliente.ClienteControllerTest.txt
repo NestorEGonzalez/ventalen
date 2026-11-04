@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.ventalen.cliente.ClienteControllerTest
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.672 s -- in com.ventalen.cliente.ClienteControllerTest
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.722 s -- in com.ventalen.cliente.ClienteControllerTest

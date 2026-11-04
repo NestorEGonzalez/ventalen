@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StockService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.stock</a> &gt; <span class="el_source">StockService.java</span></div><h1>StockService.java</h1><pre class="source lang-java linenums">package com.ventalen.stock;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+//import com.ventalen.exception.ErrorCantidadInvalida;
+import com.ventalen.exception.ErrorStockConIdInexistente;
+import com.ventalen.exception.ErrorStockYaExistente;
+import com.ventalen.funciones.ValidarCantidad;
+import com.ventalen.producto.Producto;
+import com.ventalen.producto.ProductoService;
+
+@Service
+@Transactional(readOnly = true)
+public class StockService {
+
+    private final StockRepository stockRepository;
+    private final ProductoService productoService;
+
+<span class="nc" id="L22">    public StockService(StockRepository stockRepository, ProductoService productoService){</span>
+<span class="nc" id="L23">        this.stockRepository = stockRepository;</span>
+<span class="nc" id="L24">        this.productoService = productoService;</span>
+<span class="nc" id="L25">    }</span>
+
+    @Transactional
+    public Stock crearStock(Long idProd, Integer cantidad){
+<span class="nc" id="L29">        ValidarCantidad.validarCantidad(cantidad);</span>
+<span class="nc" id="L30">        Producto producto = productoService.buscarProductoConId(idProd);</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (stockRepository.existsByProducto(producto)){</span>
+<span class="nc" id="L32">            throw new ErrorStockYaExistente(producto.getId());</span>
+        }
+<span class="nc" id="L34">        return stockRepository.save(new Stock(producto, cantidad));</span>
+    }
+
+    /*private void validarCantidad(Integer cantidad){
+        if (cantidad == null) {
+            throw new ErrorCantidadInvalida(ErrorCantidadInvalida.ERROR_CANTIDAD_NULA);
+        }
+        if (cantidad &lt; 0) {
+            throw new ErrorCantidadInvalida(ErrorCantidadInvalida.ERROR_CANTIDAD_NEGATIVA);
+        }
+    }*/
+
+    public List&lt;Stock&gt; obtenerTodosLosStocks(){
+<span class="nc" id="L47">        return stockRepository.findAll();</span>
+    }
+
+    public Stock buscarStockConId(Long id){
+<span class="nc" id="L51">        return stockRepository.findById(id)</span>
+<span class="nc" id="L52">        .orElseThrow(()-&gt;{throw new ErrorStockConIdInexistente(id);});</span>
+    }
+
+    public Stock buscarStockPorProducto(Long idProd){
+<span class="nc" id="L56">        Producto producto = productoService.buscarProductoConId(idProd);</span>
+<span class="nc" id="L57">        return stockRepository.findByProducto(producto)</span>
+<span class="nc" id="L58">                                .orElseThrow(()-&gt;{</span>
+<span class="nc" id="L59">                                    throw new ErrorStockConIdInexistente(producto.getId());});</span>
+    }
+
+    @Transactional
+    public void borrarStockConId(Long id){
+<span class="nc" id="L64">        verificarStock(id);</span>
+<span class="nc" id="L65">        stockRepository.deleteById(id);</span>
+<span class="nc" id="L66">    }</span>
+
+    private void verificarStock(Long id){
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (!stockRepository.existsById(id)){</span>
+<span class="nc" id="L70">            throw new ErrorStockConIdInexistente(id);</span>
+        }
+<span class="nc" id="L72">    }</span>
+
+    @Transactional
+    public Stock cambiarCantidad(Long id, Integer cantidad){
+<span class="nc" id="L76">        Stock stock = buscarStockConId(id);</span>
+<span class="nc" id="L77">        ValidarCantidad.validarCantidad(cantidad);</span>
+<span class="nc" id="L78">        stock.setCantidad(cantidad);</span>
+<span class="nc" id="L79">        return stockRepository.save(stock);</span>
+    }
+
+    /*@Transactional
+    public Stock modificarStock(Long id, Long productoId, Integer cantidad){
+        Stock stock = buscarStockConId(id);
+        if (!stock.getProducto().getId().equals(productoId)){
+            Producto nuevoProducto = productoService.buscarProductoConId(productoId);
+            if (stockRepository.existsByProducto(nuevoProducto)){
+                throw new ErrorStockYaExistente(nuevoProducto.getId());
+            }
+            stock.setProducto(nuevoProducto);
+        }
+        validarCantidad(cantidad);
+        stock.setCantidad(cantidad);
+        return stockRepository.save(stock);
+    }*/
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

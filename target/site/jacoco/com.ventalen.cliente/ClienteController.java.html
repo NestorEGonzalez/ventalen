@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.cliente</a> &gt; <span class="el_source">ClienteController.java</span></div><h1>ClienteController.java</h1><pre class="source lang-java linenums">package com.ventalen.cliente;
+
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping(&quot;/ventalen&quot;)
+public class ClienteController {
+
+    private static final String URL_BASE = &quot;/clientes&quot;;
+    private final ClienteService clienteService;
+    private final ClienteMapper clienteMapper;
+
+<span class="fc" id="L27">    public ClienteController(ClienteService clienteService, ClienteMapper clienteMapper) {</span>
+<span class="fc" id="L28">        this.clienteService = clienteService;</span>
+<span class="fc" id="L29">        this.clienteMapper = clienteMapper;</span>
+<span class="fc" id="L30">    }</span>
+
+    @GetMapping(URL_BASE)
+    public ResponseEntity&lt;List&lt;ClienteResponse&gt;&gt; obtenerTodos() {
+<span class="fc" id="L34">        return ResponseEntity.ok(clienteMapper.toResponseList(clienteService.obtenerTodos()));</span>
+    }
+
+    @GetMapping(URL_BASE + &quot;/{id}&quot;)
+    public ResponseEntity&lt;ClienteResponse&gt; obtenerPorId(@PathVariable Long id) {
+<span class="nc" id="L39">        return ResponseEntity.ok(clienteMapper.toResponse(clienteService.buscarPorId(id)));</span>
+    }
+
+    @PostMapping(URL_BASE)
+    public ResponseEntity&lt;ClienteResponse&gt; crear(@Valid @RequestBody ClienteRequest request) {
+<span class="fc" id="L44">        Cliente cliente = clienteService.crear(request.nyap(), request.telefono());</span>
+        URI location = ServletUriComponentsBuilder
+<span class="fc" id="L46">                        .fromCurrentRequest()</span>
+<span class="fc" id="L47">                        .path(&quot;/{id}&quot;)</span>
+<span class="fc" id="L48">                        .buildAndExpand(cliente.getId()).toUri();</span>
+<span class="fc" id="L49">        return ResponseEntity.created(location).body(clienteMapper.toResponse(cliente));</span>
+    }
+
+    @PatchMapping(URL_BASE + &quot;/{id}&quot;)
+    public ResponseEntity&lt;ClienteResponse&gt; modificar(@PathVariable Long id,
+                                                     @Valid @RequestBody ClienteRequest request) {
+<span class="fc" id="L55">        Cliente cliente = clienteService.modificar(id, request.nyap(), request.telefono());</span>
+<span class="fc" id="L56">        return ResponseEntity.accepted().body(clienteMapper.toResponse(cliente));</span>
+    }
+
+    @DeleteMapping(URL_BASE + &quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; eliminar(@PathVariable Long id) {
+<span class="fc" id="L61">        clienteService.eliminar(id);</span>
+<span class="fc" id="L62">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

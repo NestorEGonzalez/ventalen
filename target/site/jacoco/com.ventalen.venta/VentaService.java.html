@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VentaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.venta</a> &gt; <span class="el_source">VentaService.java</span></div><h1>VentaService.java</h1><pre class="source lang-java linenums"> package com.ventalen.venta;
+
+import java.util.List;
+
+//import org.springframework.lang.NonNull;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ventalen.auth.Usuario;
+import com.ventalen.auth.UsuarioRepository;
+import com.ventalen.cliente.Cliente;
+import com.ventalen.cliente.ClienteRepository;
+import com.ventalen.detalleVenta.DetalleVenta;
+import com.ventalen.detalleVenta.DetalleVentaRepository;
+import com.ventalen.detalleVenta.DetalleVentaRequest;
+import com.ventalen.exception.ErrorClienteInactivo;
+import com.ventalen.exception.ErrorClienteInexistente;
+import com.ventalen.exception.ErrorStockInsuficiente;
+import com.ventalen.exception.ErrorUsuarioNoValido;
+import com.ventalen.exception.ErrorVentaInexistente;
+import com.ventalen.producto.Producto;
+import com.ventalen.producto.ProductoService;
+import com.ventalen.stock.Stock;
+import com.ventalen.stock.StockRepository;
+
+@Service
+@Transactional(readOnly = true)
+public class VentaService {
+
+    private final VentaRepository ventaRepository;
+    private final DetalleVentaRepository detalleVentaRepository;
+    private final ProductoService productoService;
+    private final StockRepository stockRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ClienteRepository clienteRepository;
+
+    public VentaService(VentaRepository ventaRepository,
+                        DetalleVentaRepository detalleVentaRepository,
+                        ProductoService productoService,
+                        StockRepository stockRepository,
+                        UsuarioRepository usuarioRepository,
+<span class="fc" id="L43">                        ClienteRepository clienteRepository) {</span>
+<span class="fc" id="L44">        this.ventaRepository = ventaRepository;</span>
+<span class="fc" id="L45">        this.detalleVentaRepository = detalleVentaRepository;</span>
+<span class="fc" id="L46">        this.productoService = productoService;</span>
+<span class="fc" id="L47">        this.stockRepository = stockRepository;</span>
+<span class="fc" id="L48">        this.usuarioRepository = usuarioRepository;</span>
+<span class="fc" id="L49">        this.clienteRepository = clienteRepository;</span>
+<span class="fc" id="L50">    }</span>
+
+    public List&lt;Venta&gt; obtenerTodas() {
+<span class="nc" id="L53">        return ventaRepository.findAll();</span>
+    }
+
+    public Venta buscarPorId(Long id) {
+<span class="nc" id="L57">        return ventaRepository.findById(id)</span>
+<span class="nc" id="L58">                .orElseThrow(() -&gt; new ErrorVentaInexistente(id));</span>
+    }
+
+    @Transactional
+    public Venta crear(Boolean pagado, Long clienteId, List&lt;DetalleVentaRequest&gt; detallesRequest) {
+<span class="fc" id="L63">        Usuario usuario = obtenerUsuarioAutenticado();</span>
+<span class="fc" id="L64">        Venta venta = new Venta(usuario, pagado);</span>
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (clienteId != null) {</span>
+<span class="fc" id="L67">            Cliente cliente = clienteRepository.findById(clienteId)</span>
+<span class="pc" id="L68">                    .orElseThrow(() -&gt; new ErrorClienteInexistente(clienteId));</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (!cliente.getActivo()) {</span>
+<span class="fc" id="L70">                throw new ErrorClienteInactivo(clienteId);</span>
+            }
+<span class="fc" id="L72">            venta.setCliente(cliente);</span>
+        }
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (DetalleVentaRequest detReq : detallesRequest) {</span>
+<span class="fc" id="L76">            Producto producto = productoService.buscarProductoConId(detReq.productoId());</span>
+            
+            //Stock stock = stockRepository.findByProducto(producto).orElse(null);
+<span class="fc" id="L79">            Stock stock = stockRepository.findByProducto(producto)</span>
+<span class="fc" id="L80">                    .orElseThrow(() -&gt; new ErrorStockInsuficiente(producto.getId(), 0, detReq.cantidad()));</span>
+
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">            int disponible = (stock != null) ? stock.getCantidad() : 0;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if (disponible &lt; detReq.cantidad()) {</span>
+<span class="fc" id="L84">                throw new ErrorStockInsuficiente(producto.getId(), disponible, detReq.cantidad());</span>
+            }
+
+<span class="fc" id="L87">            stock.setCantidad(stock.getCantidad() - detReq.cantidad());</span>
+<span class="fc" id="L88">            stockRepository.save(stock);</span>
+
+<span class="fc" id="L90">            DetalleVenta detalle = new DetalleVenta();</span>
+<span class="fc" id="L91">            detalle.setProducto(producto);</span>
+<span class="fc" id="L92">            detalle.setCantidad(detReq.cantidad());</span>
+<span class="fc" id="L93">            detalle.setPrecioVenta(detReq.precioVenta());</span>
+<span class="fc" id="L94">            detalle.setStock(stock);</span>
+<span class="fc" id="L95">            venta.addDetalle(detalle);</span>
+<span class="fc" id="L96">        }</span>
+
+<span class="fc" id="L98">        return ventaRepository.save(venta);</span>
+    }
+
+    private Usuario obtenerUsuarioAutenticado() {
+<span class="fc" id="L102">        String username = SecurityContextHolder.getContext().getAuthentication().getName();</span>
+<span class="fc" id="L103">        return usuarioRepository.findByUsername(username)</span>
+<span class="pc" id="L104">                .orElseThrow(() -&gt; new ErrorUsuarioNoValido(ErrorUsuarioNoValido.ERROR_USUARIO_INEXISTENTE));</span>
+    }
+
+    public Venta pagar(Long id) {
+<span class="nc" id="L108">        Venta ven = ventaRepository.findById(id)</span>
+<span class="nc" id="L109">                .orElseThrow(() -&gt; new ErrorVentaInexistente(id));  </span>
+<span class="nc" id="L110">        ven.pagar();</span>
+<span class="nc" id="L111">        return ventaRepository.save(ven);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

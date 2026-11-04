@@ -61,6 +61,14 @@ Ejecución de suite de pruebas:
 ```bash
     ./mvnw test
 ```
+
+Informe de cobertura con JaCoCo:
+
+```bash
+    ./mvnw verify
+```
+
+El informe HTML se genera en `target/site/jacoco/index.html`.
                
 ## Reglas de negocio
 
@@ -109,5 +117,5 @@ También puede crearse un archivo `.env` dentro del proyecto con ambas variables
 - [x] Tests de integración
 - [ ] Reportes
 - [ ] OpenAPI / Swagger
-- [ ] JaCoCo
-- [ ] GitHub Actions
+- [x] JaCoCo
+- [x] GitHub Actions

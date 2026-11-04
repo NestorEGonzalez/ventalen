@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.security</a> &gt; <span class="el_source">JwtUtil.java</span></div><h1>JwtUtil.java</h1><pre class="source lang-java linenums">package com.ventalen.security;
+
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+<span class="nc" id="L16">public class JwtUtil {</span>
+
+    private static final long EXPIRATION_MS = 8*60*60*1000; //8 horas
+
+    @Value(&quot;${app.jwt.secret}&quot;) //Trae la firma establecida en application.properties que va a firmar los tokens
+    private String secretKey;
+    
+    //Convierte la clave secreta que es un string en un SecretKey
+    private SecretKey getSignKey(){
+<span class="nc" id="L25">        byte[] keyBytes = Decoders.BASE64.decode(secretKey);</span>
+<span class="nc" id="L26">        return Keys.hmacShaKeyFor(keyBytes);</span>
+    }
+
+    //Crea un token en formato string
+    public String generarToken(String username, String rol){
+<span class="nc" id="L31">        return Jwts.builder()</span>
+<span class="nc" id="L32">                    .subject(username) //Usuario</span>
+<span class="nc" id="L33">                    .claim(&quot;rol&quot;, rol) //Rol del usuario</span>
+<span class="nc" id="L34">                    .issuedAt(new Date()) //fecha de creacion (el momento de la creacion)</span>
+<span class="nc" id="L35">                    .expiration(new Date(System.currentTimeMillis()+ EXPIRATION_MS)) //Fecha de vencimiento (fecha de creacion mas tiempo de expiracion)</span>
+<span class="nc" id="L36">                    .signWith(getSignKey()) //Firma secreta</span>
+<span class="nc" id="L37">                    .compact(); //Devuelve en formato compacto(en string);</span>
+    }
+
+    public String extraerUsername(String token) {
+<span class="nc" id="L41">        return extraerClaims(token).getSubject();</span>
+    }
+    
+    public String extraerRol(String token) {
+<span class="nc" id="L45">        return extraerClaims(token).get(&quot;rol&quot;, String.class);</span>
+    }
+
+    //Intenta parsear el token, decodificar su estructura
+    public boolean esTokenValido(String token) {
+        try {
+<span class="nc" id="L51">            extraerClaims(token);</span>
+<span class="nc" id="L52">            return true;</span>
+<span class="nc" id="L53">        } catch (Exception e) {</span>
+<span class="nc" id="L54">            return false;</span>
+        }
+    }
+
+    // Extrae los claims (pares clave valor del token)
+    private Claims extraerClaims(String token) {
+<span class="nc" id="L60">        return Jwts.parser() //decodifica el token</span>
+<span class="nc" id="L61">                    .verifyWith(getSignKey()) //verifia que esta firmado con la clave secreta</span>
+<span class="nc" id="L62">                    .build() //genera </span>
+<span class="nc" id="L63">                    .parseSignedClaims(token)</span>
+<span class="nc" id="L64">                    .getPayload(); //extrae la info util user, expiracion o permisos</span>
+    }
+
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

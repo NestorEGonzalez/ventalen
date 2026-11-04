@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProveedorMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ventalen</a> &gt; <a href="index.source.html" class="el_package">com.ventalen.proveedor</a> &gt; <span class="el_source">ProveedorMapperImpl.java</span></div><h1>ProveedorMapperImpl.java</h1><pre class="source lang-java linenums">package com.ventalen.proveedor;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-08-25T10:30:29-0300&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.12.1 (Debian)&quot;
+)
+@Component
+<span class="nc" id="L14">public class ProveedorMapperImpl implements ProveedorMapper {</span>
+
+    @Override
+    public ProveedorResponse toResponse(Proveedor proveedor) {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if ( proveedor == null ) {</span>
+<span class="nc" id="L19">            return null;</span>
+        }
+
+<span class="nc" id="L22">        Long id = null;</span>
+<span class="nc" id="L23">        String proveedor1 = null;</span>
+<span class="nc" id="L24">        String corredor = null;</span>
+<span class="nc" id="L25">        String telefono = null;</span>
+
+<span class="nc" id="L27">        id = proveedor.getId();</span>
+<span class="nc" id="L28">        proveedor1 = proveedor.getProveedor();</span>
+<span class="nc" id="L29">        corredor = proveedor.getCorredor();</span>
+<span class="nc" id="L30">        telefono = proveedor.getTelefono();</span>
+
+<span class="nc" id="L32">        ProveedorResponse proveedorResponse = new ProveedorResponse( id, proveedor1, corredor, telefono );</span>
+
+<span class="nc" id="L34">        return proveedorResponse;</span>
+    }
+
+    @Override
+    public List&lt;ProveedorResponse&gt; toResponseList(List&lt;Proveedor&gt; proveedores) {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if ( proveedores == null ) {</span>
+<span class="nc" id="L40">            return null;</span>
+        }
+
+<span class="nc" id="L43">        List&lt;ProveedorResponse&gt; list = new ArrayList&lt;ProveedorResponse&gt;( proveedores.size() );</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        for ( Proveedor proveedor : proveedores ) {</span>
+<span class="nc" id="L45">            list.add( toResponse( proveedor ) );</span>
+<span class="nc" id="L46">        }</span>
+
+<span class="nc" id="L48">        return list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
