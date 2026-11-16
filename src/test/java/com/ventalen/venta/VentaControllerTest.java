@@ -139,6 +139,59 @@ class VentaControllerTest {
 
     @Test
     void test07_sePuedeCrearUnaVentaYNoPagarla() throws Exception {
+        Venta venta = new Venta();
+        DetalleVentaRequest detalle = new DetalleVentaRequest(1L, 2, new BigDecimal("15"));
+        VentaResponse res = new VentaResponse(1L, LocalDate.now(), false, "admin", null, null, List.of());
+        
+        when(ventaService.crear(eq(false), eq(null), anyList())).thenReturn(venta);
+        when(ventaMapper.toResponse(any(Venta.class))).thenReturn(res);
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new VentaRequest(false, null, List.of(detalle)))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.pagado").value(false))
+                .andExpect(header().exists("Location"));
         
     }
+
+    @Test
+    void test08_sePuedeCrearUnaVentaYNoPagarlaYLuegoPagarla() throws Exception {
+        Venta venta = new Venta();
+        DetalleVentaRequest detalle = new DetalleVentaRequest(1L, 2, new BigDecimal("15"));
+        VentaResponse requestResponse = new VentaResponse(1L, LocalDate.now(), false, "admin", null, null, List.of());
+
+        //cuando recibo una venta con false en pagado, retorno la venta anteriormente creada. Todos son matches (no se pueden mezclar)
+        when(ventaService.crear(eq(false), eq(null), anyList())).thenReturn(venta);
+        // Cuando invoco a ventaService.pagar, el thenAnswer es para ejecutar lógica, por eso hace venta.pagar
+        when(ventaService.pagar(1L)).thenAnswer(invocation -> {
+            venta.pagar();
+            return venta;
+        });
+        // Simil al anterior, pero esta vez estoy mapeando una venta. 
+        when(ventaMapper.toResponse(any(Venta.class))).thenAnswer(invocation -> {
+            Venta ventaMapeada = invocation.getArgument(0);
+            return new VentaResponse(1L, LocalDate.now(), ventaMapeada.getPagado(),
+                    "admin", null, null, List.of());
+        });
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new VentaRequest(false, null, List.of(detalle)))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.pagado").value(false))
+                .andExpect(header().exists("Location"));
+        
+        mockMvc.perform(post(URL + "/pagar/" + requestResponse.id())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestResponse)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(requestResponse.id()))
+                .andExpect(jsonPath("$.pagado").value(true));
+}
+
 }

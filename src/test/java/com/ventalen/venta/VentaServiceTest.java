@@ -187,4 +187,5 @@ class VentaServiceTest {
         assertEquals(null, venta.getCliente());
         assertEquals(8, stockInicial.getCantidad());
     }
-}
+
+  }

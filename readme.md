@@ -49,6 +49,16 @@ El proyecto utiliza una **Arquitectura en Capas** limpia y mantenible, aplicando
 - Autenticación Stateless basada en **Spring Security** y **JWT (JSON Web Tokens)**.
 - Control de acceso basado en roles **(admin, user)** para proteger endpoints críticos según el perfil de usuario.
 
+## Documentación de la API
+
+La documentación se genera automáticamente con **springdoc-openapi** a partir de los controladores:
+
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON:** http://localhost:8080/v3/api-docs
+- **OpenAPI YAML:** http://localhost:8080/v3/api-docs.yaml
+
+Para probar endpoints protegidos, usar el botón **Authorize** e ingresar el JWT obtenido en `POST /auth/login`.
+
 ## Testing & Calidad de Código
 
 Desarrollado bajo la metodología **Test Driven Development (TDD)**:
@@ -116,6 +126,6 @@ También puede crearse un archivo `.env` dentro del proyecto con ambas variables
 - [x] Tests unitarios
 - [x] Tests de integración
 - [ ] Reportes
-- [ ] OpenAPI / Swagger
+- [x] OpenAPI / Swagger
 - [x] JaCoCo
 - [x] GitHub Actions

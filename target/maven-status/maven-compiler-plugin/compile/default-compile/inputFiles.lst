@@ -16,6 +16,7 @@
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/auth/UsuarioRepository.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/ingreso/IngresoResponse.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorResponse.java
+/home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/configuration/OpenApiConfig.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/exception/ErrorNombreDeCategoriaInexistente.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/cliente/ClienteController.java
 /home/fido/Documentos/ProyectosPersonales/ventalen/src/main/java/com/ventalen/proveedor/ProveedorService.java

@@ -37,6 +37,7 @@ public class SecurityConfig {
                     .csrf(csrf -> csrf.disable()) // desactiva CSRF, es deir esta API no utiliza sesiones de navegador (con cookis por ej)
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //indica que no se guarda estado en el server, todo se maneja con JWT token.
                 .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/register").hasRole(ADMIN)
                     .requestMatchers(HttpMethod.POST, "/auth/change-password").authenticated()

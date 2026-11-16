@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
@@ -63,6 +65,8 @@ class VentaControllerTestIT extends TestBase {
 
     @BeforeEach
     void setUp() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("admin-test", ""));
         Categoria cat = categoriaService.crearCategoria("Cat Test");
         producto = productoService.crearProducto("Prod Test", new BigDecimal("10.00"), cat.getId());
         stockRepository.save(new Stock(producto, 10));
@@ -122,31 +126,26 @@ class VentaControllerTestIT extends TestBase {
     }
 
     @Test
-    void test05_sePuedeCrearUnaVentaYNoPAgarla() throws Exception {
+    void test05_sePuedeCrearUnaVentaYNoPagarla() throws Exception {
         Cliente cliente = clienteService.crear("Activo","111111");
         DetalleVentaRequest detalle = new DetalleVentaRequest(producto.getId(), 1, new BigDecimal("10"));
-        VentaRequest request = new VentaRequest(false, cliente.getId(), java.util.List.of(detalle));
 
-        String venta = mockMvc.perform(post(URL)
+        String ventaJson = mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new VentaRequest(false, cliente.getId(), java.util.List.of(detalle)))))
+                        .content(objectMapper.writeValueAsString(
+                                new VentaRequest(false, cliente.getId(), java.util.List.of(detalle)))))
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.pagado").value(false))
+                        .andExpect(jsonPath("$.usuario").value("admin-test"))
                         .andReturn().getResponse().getContentAsString();
-        Venta ven = objectMapper.readValue(venta, Venta.class);  
-        /*
-        mockMvc.perform(post(URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.pagado").value(false))
-                .andExpect(header().exists("Location"));
-        */
+        VentaResponse ventaCreada = objectMapper.readValue(ventaJson, VentaResponse.class);
 
-        mockMvc.perform(post(URL + "/pagar/"+ven.getId())
+        mockMvc.perform(post(URL + "/pagar/" + ventaCreada.id())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(ventaCreada)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(ventaCreada.id()))
+                .andExpect(jsonPath("$.usuario").value("admin-test"))
                 .andExpect(jsonPath("$.pagado").value(true));
     }
 }

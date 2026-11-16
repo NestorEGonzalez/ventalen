@@ -3,6 +3,8 @@ package com.ventalen.venta;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.math.BigDecimal;
 
@@ -109,5 +111,17 @@ class VentaServiceTestIT extends TestBase {
 
         assertNotNull(venta.getCliente());
         assertEquals(cliente.getId(), venta.getCliente().getId());
+    }
+    @Test
+    void test06_sePuedeCrearUnaVentaYLuegoPagarla(){
+        Cliente cliente = clienteService.crear("Cliente", "1122334455");
+        DetalleVentaRequest detalle = new DetalleVentaRequest(producto.getId(), 2, new BigDecimal("15"));
+        Venta venta = ventaService.crear(false, cliente.getId(), java.util.List.of(detalle));
+
+        assertFalse(venta.getPagado());
+
+        ventaService.pagar(venta.getId());
+
+        assertTrue(venta.getPagado());
     }
 }
