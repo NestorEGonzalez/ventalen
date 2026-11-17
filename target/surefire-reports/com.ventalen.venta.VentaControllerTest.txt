@@ -1,22 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.ventalen.venta.VentaControllerTest
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 3.405 s <<< FAILURE! -- in com.ventalen.venta.VentaControllerTest
-com.ventalen.venta.VentaControllerTest.test08_sePuedeCrearUnaVentaYNoPagarlaYLuegoPagarla -- Time elapsed: 0.161 s <<< FAILURE!
-java.lang.AssertionError: JSON path "$.pagado" expected:<false> but was:<true>
-	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
-	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
-	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:172)
-	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:111)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
-	at com.ventalen.venta.VentaControllerTest.test08_sePuedeCrearUnaVentaYNoPagarlaYLuegoPagarla(VentaControllerTest.java:171)
-
-com.ventalen.venta.VentaControllerTest.test07_sePuedeCrearUnaVentaYNoPagarla -- Time elapsed: 0.082 s <<< FAILURE!
-java.lang.AssertionError: JSON path "$.pagado" expected:<false> but was:<true>
-	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:62)
-	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:129)
-	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:172)
-	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:111)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:212)
-	at com.ventalen.venta.VentaControllerTest.test07_sePuedeCrearUnaVentaYNoPagarla(VentaControllerTest.java:153)
-
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.967 s -- in com.ventalen.venta.VentaControllerTest

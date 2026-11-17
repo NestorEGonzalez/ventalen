@@ -1,131 +1,131 @@
 [![Java CI with Maven](https://github.com/NestorEGonzalez/ventalen/actions/workflows/maven.yml/badge.svg)](https://github.com/NestorEGonzalez/ventalen/actions/workflows/maven.yml)
 
-# 🛒 Ventalen
+# Ventalen
 
-API REST desarrollada con **Java 21** y **Spring Boot** para la gestión integral de comercios.
+> **Ventalen es una aplicación backend para el control de stock, ingresos y ventas de productos.**
 
-El proyecto permite administrar productos, categorías, clientes, proveedores, ingresos, ventas y ajustes de stock, implementando reglas de negocio para garantizar la consistencia del inventario.
+API REST desarrollada con **Java 21** y **Spring Boot** para centralizar operaciones de inventario y gestión comercial. Incluye autenticación con JWT, persistencia en PostgreSQL, validaciones de negocio y pruebas automatizadas, todo corriendo en Docker.
 
-Fue desarrollado siguiendo una estrategia **Test Driven Development (TDD)** y utiliza **Spring Security**, **JWT**, **PostgreSQL**, **Docker** y **Testcontainers**.
+## Funcionalidades
 
-## Características
+- Gestión de productos, categorías, clientes y proveedores.
+- Registro de ingresos que actualizan el stock tanto positivamente como negativamente.
+- Registro de ventas con descuento automático de stock.
+- Ventas pendientes de pago y posterior confirmación del pago.
+- Ajustes de inventario con validación de stock disponible.
+- Autenticación con JWT y autorización por roles.
+- Respuestas de error centralizadas y validación de datos de entrada.
 
-- Gestión de productos y categorías.
-- Administración de clientes y proveedores.
-- Registro de ingresos y ventas.
-- Ajustes automáticos de stock.
-- Ventas pendientes de pago (fiado).
-- Autenticación y autorización mediante JWT.
-- Validaciones con Bean Validation.
-- Manejo global de excepciones.
-- Arquitectura por capas.
-- Pruebas unitarias e integración.
+## Tecnologías y diseño
 
-## Tecnologías
-
-| Categoría | Tecnologías |
-|------------|-------------|
-| Lenguaje | Java 21 |
-| Framework | Spring Boot 4 |
-| Persistencia | Spring Data JPA · Hibernate |
+| Área | Tecnologías |
+| --- | --- |
+| Lenguaje y framework | Java 21 · Spring Boot 4 |
+| API | Spring MVC · OpenAPI · Swagger UI |
+| Persistencia | Spring Data JPA · Hibernate · PostgreSQL |
 | Seguridad | Spring Security · JWT |
-| Base de datos | PostgreSQL |
-| Testing | JUnit 5 · Mockito · Testcontainers |
-| Contenedores | Docker · Docker Compose |
-| Build | Maven |
-| Mapeo | MapStruct |
+| Mapeo | MapStruct · DTOs |
+| Calidad | JUnit 5 · Mockito · Testcontainers · JaCoCo |
+| Ejecución | Maven · Docker · Docker Compose |
 
-## Arquitectura y Diseño
+La aplicación organiza el código por funcionalidad y separa responsabilidades:
 
-El proyecto utiliza una **Arquitectura en Capas** limpia y mantenible, aplicando el patrón DTO para desacoplar las entidades de dominio de la capa de exposición API:
+`HTTP/JSON → Controller → Service → Repository → PostgreSQL`
 
-`Controller ➔ DTO ➔ MapStruct ➔ Service ➔ Repository ➔ PostgreSQL`
+Los DTOs y MapStruct mantienen el contrato HTTP desacoplado de las entidades persistidas. Las operaciones de negocio que modifican el inventario se ejecutan transaccionalmente para preservar su consistencia.
 
-- **Manejo Global de Excepciones:** Centralizado mediante `@ControllerAdvice` para retornar respuestas estandarizadas.
-- **Gestión Transaccional:** Uso explícito de `@Transactional` en la capa de servicios para garantizar atomicidad y consistencia (ACID) en operaciones multietapa (ej. actualización de stock al procesar ventas).
+## Requisitos
 
-## Seguridad
+- **Docker y Docker Compose** para ejecutar la aplicación y las pruebas de integración.
+- **Java 21** para ejecutar Maven localmente.
 
-- Autenticación Stateless basada en **Spring Security** y **JWT (JSON Web Tokens)**.
-- Control de acceso basado en roles **(admin, user)** para proteger endpoints críticos según el perfil de usuario.
+## Inicio rápido con Docker
 
-## Documentación de la API
+1. Clona el repositorio:
 
-La documentación se genera automáticamente con **springdoc-openapi** a partir de los controladores:
+   ```bash
+   git clone https://github.com/NestorEGonzalez/ventalen.git
+   cd ventalen
+   ```
 
-- **Swagger UI:** http://localhost:8080/swagger-ui.html
-- **OpenAPI JSON:** http://localhost:8080/v3/api-docs
-- **OpenAPI YAML:** http://localhost:8080/v3/api-docs.yaml
+2. Crea un archivo `.env` en la raíz del proyecto:
 
-Para probar endpoints protegidos, usar el botón **Authorize** e ingresar el JWT obtenido en `POST /auth/login`.
+   ```dotenv
+   DB_PASSWORD=una_clave_local_segura
+   JWT_SECRET=REEMPLAZAR_POR_UNA_CLAVE_BASE64
+   ```
 
-## Testing & Calidad de Código
+   `JWT_SECRET` debe ser una clave Base64 de al menos 32 bytes. Puedes generar una con:
 
-Desarrollado bajo la metodología **Test Driven Development (TDD)**:
+   ```bash
+   openssl rand -base64 32
+   ```
 
-- **Pruebas Unitarias:** Cobertura de la lógica de negocio en la capa de servicios aislando dependencias con **Mockito**.
-- **Pruebas de Integración:** Verificación de repositorios JPA y flujos de base de datos ejecutados sobre una instancia real de **PostgreSQL** orquestada por **Testcontainers**.
+   Copia el resultado en `.env`. No publiques este archivo ni sus valores.
 
-Ejecución de suite de pruebas:
+3. Construye e inicia la aplicación y PostgreSQL:
+
+   ```bash
+   docker compose up --build
+   ```
+
+   La API queda disponible en `http://localhost:8080`. Para detener los servicios, usa `Ctrl+C`; también puedes ejecutar `docker compose down` desde otra terminal.
+
+   En Docker Compose se configura un usuario administrador de desarrollo: **admin / admin123**. Cambia esas credenciales antes de cualquier despliegue real.
+
+## Ejecutar las pruebas con Maven
+
+Ejecuta la suite completa desde la raíz:
 
 ```bash
-    ./mvnw test
+./mvnw test
 ```
 
-Informe de cobertura con JaCoCo:
+Las pruebas de integración usan **Testcontainers** y requieren que Docker esté disponible. Para ejecutar solo las pruebas unitarias:
 
 ```bash
-    ./mvnw verify
+./mvnw test -Dtest="!*TestIT"
+```
+
+Para generar el informe de cobertura JaCoCo:
+
+```bash
+./mvnw verify
 ```
 
 El informe HTML se genera en `target/site/jacoco/index.html`.
-               
-## Reglas de negocio
 
-- No se permiten productos duplicados.
-- No se permiten categorías duplicadas.
-- No es posible registrar ventas que generen stock negativo.
-- Los ingresos incrementan automáticamente el stock.
-- Los ajustes actualizan el stock de forma consistente.
-- Las ventas descuentan el stock disponible.
-- Las ventas pueden registrarse como pendientes de pago (fiado) y descuentan stock.
-- Las operaciones críticas se ejecutan dentro de transacciones para mantener la integridad de los datos.
+## Probar la API con Swagger
 
-## Instalación y ejecución
+Con la aplicación en ejecución, abre [Swagger UI](http://localhost:8080/swagger-ui.html). La especificación también está disponible en:
 
-1. **Clonar el repositorio:**
-```bash
-    git clone [https://github.com/NestorEGonzalez/ventalen.git] (https://github.com/NestorEGonzalez/ventalen.git)
-    cd ventalen
-```
-2. **Configurar variables de entorno:** (antes de levantar los contenedores, es necesario definir las variables de entorno en local):
+- [OpenAPI JSON](http://localhost:8080/v3/api-docs)
+- [OpenAPI YAML](http://localhost:8080/v3/api-docs.yaml)
 
-```bash
-    export DB_PASSWORD = una_contraseña_segura
-    export JWT_SECRET = un_hash_sha256
-```
-También puede crearse un archivo `.env` dentro del proyecto con ambas variables.
+Para probar operaciones protegidas:
 
-3. **Iniciar la aplicación:**
+1. Ejecuta `POST /auth/login` con las credenciales de desarrollo:
 
-```bash
-    docker compose up --build
-```
-        
-## Roadmap
+   ```json
+   {
+     "username": "admin",
+     "password": "admin123"
+   }
+   ```
 
-- [x] Gestión de productos
-- [x] Gestión de categorías
-- [x] Gestión de clientes
-- [x] Gestión de proveedores
-- [x] Gestión de ingresos
-- [x] Gestión de ventas
-- [x] Gestión de stock
-- [x] Seguridad con JWT
-- [x] Docker
-- [x] Tests unitarios
-- [x] Tests de integración
-- [ ] Reportes
-- [x] OpenAPI / Swagger
-- [x] JaCoCo
-- [x] GitHub Actions
+2. Copia el valor `token` de la respuesta.
+3. Pulsa **Authorize** en Swagger UI y pega el token JWT. Swagger añadirá el esquema `Bearer` al enviar las solicitudes.
+4. Prueba los endpoints documentados. Las operaciones de lectura `GET` bajo `/ventalen/**` son públicas; las operaciones de escritura requieren el rol `ADMIN`.
+
+## Reglas de negocio destacadas
+
+- Las ventas descuentan el stock disponible y no permiten que quede negativo.
+- Los ingresos incrementan el stock.
+- Una venta puede quedar pendiente de pago descontando el stock, evitando futuras discrepancias.
+- Los ajustes y las operaciones se procesan con validaciones y transacciones.
+- Los datos de entrada se validan y los errores se devuelven mediante respuestas centralizadas.
+
+## Próximas mejoras
+
+- [ ] Reportes de inventario y ventas.
+
